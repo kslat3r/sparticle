@@ -1,6 +1,8 @@
 {
   "dependencies": {
     "aws-sdk": "^2.823.0",
+    "is-base64": "^1.1.0",
+    "is-valid-http-url": "^1.0.3",
     "uuid": "^3.3.2"
   }
 }

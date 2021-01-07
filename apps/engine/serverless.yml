@@ -33,7 +33,8 @@ provider:
   iamRoleStatements:
     - Effect: "Allow"
       Action:
-        - "polly:*"
+        - "polly:StartSpeechSynthesisTask"
+        - "polly:GetSpeechSynthesisTask"
       Resource: "*"
     - Effect: "Allow"
       Action:
@@ -55,15 +56,15 @@ provider:
 #    - exclude-me-dir/**
 
 functions:
-  hello:
-    handler: handler.hello
+  createTask:
+    handler: handler.createTask
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details
     events:
       - httpApi:
-          path: /hello-world
-          method: get
+          path: /tasks
+          method: post
 #      - websocket: $connect
 #      - s3: ${env:BUCKET}
 #      - schedule: rate(10 minutes)
@@ -92,6 +93,20 @@ functions:
 #          conditions:
 #            host: example.com
 #            path: /hello
+  getTask:
+    handler: handler.getTask
+    events:
+      - httpApi:
+          path: /tasks/{id}
+          method: get
+    
+  updateAudioAcl:
+    handler: handler.updateAudioAcl
+    events:
+      - s3:
+          bucket: sparticle-engine-prod-audio
+          event: s3:ObjectCreated:*
+          existing: true
 
 #    Define function environment variables here
 #    environment:
