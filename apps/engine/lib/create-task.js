@@ -1,6 +1,9 @@
 const AWS = require('aws-sdk');
 const isBase64 = require('is-base64');
 const isValidHttpUrl = require('is-valid-http-url');
+const getHtmlFromUrl = require('./get-html-from-url');
+const getArticleFromHtml = require('./get-article-from-html');
+const getSsmlFromHtml = require('./get-ssml-from-html');
 const RequestException = require('../exceptions/RequestException');
 const InternalException = require('../exceptions/InternalException');
 
@@ -42,9 +45,35 @@ module.exports = async (event) => {
 
   // get url contents
 
+  let html;
+
+  try {
+    html = await getHtmlFromUrl(url);
+  } catch (e) {
+    throw new InternalException(e.message);
+  }
+
+  // get article information
+
+  let article;
+
+  try {
+    article = getArticleFromHtml(html);
+  } catch (e) {
+    throw new InternalException(e.message);
+  }
+
+  console.log(article);
+
   // convert to ssml
 
-  // check lengths against API limits
+  let ssml;
+
+  try {
+    ssml = getSsmlFromHtml(article.siteName, article.title, article.byline, article.content);
+  } catch (e) {
+    throw new InternalException(e.message);
+  }
 
   // create task
 
@@ -52,8 +81,9 @@ module.exports = async (event) => {
   
   try {
     task = await Polly.startSpeechSynthesisTask({
-      Text: 'Hello from Ed\'s text-to-speech engine!',
-      VoiceId: 'Russell',
+      Text: ssml,
+      TextType: 'ssml',
+      VoiceId: 'Amy',
       OutputFormat: 'mp3',
       OutputS3BucketName: 'sparticle-engine-prod-audio'
     }).promise();
