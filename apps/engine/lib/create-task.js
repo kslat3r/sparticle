@@ -1,9 +1,11 @@
 const AWS = require('aws-sdk');
 const isBase64 = require('is-base64');
 const isValidHttpUrl = require('is-valid-http-url');
+const urlMutator = require('./url-mutator');
 const getHtmlFromUrl = require('./get-html-from-url');
 const getArticleFromHtml = require('./get-article-from-html');
 const getSsmlFromHtml = require('./get-ssml-from-html');
+const ssmlMutator = require('./ssml-mutator');
 const RequestException = require('../exceptions/RequestException');
 const InternalException = require('../exceptions/InternalException');
 
@@ -43,6 +45,10 @@ module.exports = async (event) => {
     throw new RequestException('Mandatory request body property \'url\' should be a valid URL');
   }
 
+  // mutate url
+
+  url = urlMutator(url);
+
   // get url contents
 
   let html;
@@ -63,8 +69,6 @@ module.exports = async (event) => {
     throw new InternalException(e.message);
   }
 
-  console.log(article);
-
   // convert to ssml
 
   let ssml;
@@ -74,6 +78,9 @@ module.exports = async (event) => {
   } catch (e) {
     throw new InternalException(e.message);
   }
+
+  ssml = ssmlMutator(url, ssml);
+  console.log(ssml);
 
   // create task
 
