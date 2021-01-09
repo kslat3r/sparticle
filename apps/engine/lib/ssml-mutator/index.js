@@ -5,6 +5,7 @@ module.exports = (url, ssml) => {
 
   ssml = wikipedia(url, ssml);
   ssml = ssml.replace(/\s&\s/g, ' and ');
+  ssml = ssml.replace(/&/g, 'ampersand');
 
   return ssml;
 }

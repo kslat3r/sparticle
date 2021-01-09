@@ -80,7 +80,6 @@ module.exports = async (event) => {
   }
 
   ssml = ssmlMutator(url, ssml);
-  console.log(ssml);
 
   // create task
 
@@ -95,8 +94,6 @@ module.exports = async (event) => {
       OutputS3BucketName: 'sparticle-engine-prod-audio'
     }).promise();
   } catch (e) {
-    console.error(e);
-
     throw new InternalException(e.message);
   }
 
