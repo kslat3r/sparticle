@@ -1,12 +1,12 @@
-const createTask = require('../lib/create-task');
+const getArticle = require('../lib/get-article');
 
 module.exports = async event => {
   try {
-    const task = await createTask(event);
+    const article = await getArticle(event);
 
     return {
       statusCode: 200,
-      body: JSON.stringify(task)
+      body: JSON.stringify(article)
     };
   } catch (e) {
     console.error(e);

@@ -1,4 +1,4 @@
-class Exception500 extends Error {
+class InternalException extends Error {
   constructor(...params) {
     super(...params)
 
@@ -6,4 +6,4 @@ class Exception500 extends Error {
   }
 }
 
-module.exports = Exception500;
+module.exports = InternalException;

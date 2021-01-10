@@ -1,5 +1,4 @@
-const AWS = require('aws-sdk');
-const S3 = new AWS.S3();
+const makeObjectPublic = require('./storage/make-object-public');
 
 module.exports = async (event) => {
   if (event.Records === undefined) {
@@ -17,11 +16,7 @@ module.exports = async (event) => {
   const key = record.s3.object.key;
 
   try {
-    await S3.putObjectAcl({
-      Bucket: bucket,
-      Key: key,
-      GrantRead: 'uri=http://acs.amazonaws.com/groups/global/AllUsers'
-    }).promise();
+    await makeObjectPublic(bucket, key);
   } catch (e) {
     throw e;
   }

@@ -1,4 +1,4 @@
-class Exception400 extends Error {
+class RequestException extends Error {
   constructor(...params) {
     super(...params)
 
@@ -6,4 +6,4 @@ class Exception400 extends Error {
   }
 }
 
-module.exports = Exception400;
+module.exports = RequestException;

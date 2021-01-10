@@ -1,7 +1,7 @@
-const createTaskHandler = require('./handlers/create-task');
-const getTaskHandler = require('./handlers/get-task');
-const updateAudioAcl = require('./handlers/update-audio-acl');
+const createArticleHandler = require('./handlers/create-article');
+const getArticleHandler = require('./handlers/get-article');
+const updateAudioAclHandler = require('./handlers/update-audio-acl');
 
-module.exports.createTask = createTaskHandler;
-module.exports.getTask = getTaskHandler;
-module.exports.updateAudioAcl = updateAudioAcl;
+module.exports.createArticle = createArticleHandler;
+module.exports.getArticle = getArticleHandler;
+module.exports.updateAudioAcl = updateAudioAclHandler;

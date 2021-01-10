@@ -41,6 +41,13 @@ provider:
         - "s3:PutObject"
         - "s3:PutObjectAcl"
       Resource: "arn:aws:s3:::sparticle-engine-prod-audio/*"
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+      Resource: "arn:aws:dynamodb:eu-west-2:690524749915:table/articles"
 
 # you can define service wide environment variables here
 #  environment:
@@ -56,14 +63,14 @@ provider:
 #    - exclude-me-dir/**
 
 functions:
-  createTask:
-    handler: handler.createTask
+  createArticle:
+    handler: handler.createArticle
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details
     events:
       - httpApi:
-          path: /tasks
+          path: /articles
           method: post
 #      - websocket: $connect
 #      - s3: ${env:BUCKET}
@@ -93,11 +100,11 @@ functions:
 #          conditions:
 #            host: example.com
 #            path: /hello
-  getTask:
-    handler: handler.getTask
+  getArticle:
+    handler: handler.getArticle
     events:
       - httpApi:
-          path: /tasks/{id}
+          path: /articles/{id}
           method: get
     
   updateAudioAcl:
