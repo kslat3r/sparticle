@@ -8,8 +8,8 @@ const getSsmlFromContent = require('./ssml/get-ssml-from-content');
 const mutateSsml = require('./ssml/mutate-ssml');
 const createTask = require('./speech/create-task');
 const createArticle = require('./db/create-article');
-const RequestException = require('./exceptions/Request');
-const InternalException = require('./exceptions/Internal');
+const RequestException = require('./exception/Request');
+const InternalException = require('./exception/Internal');
 
 module.exports = async (event) => {
   // authorize

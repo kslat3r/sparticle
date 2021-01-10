@@ -1,5 +1,5 @@
 const AWS = require('aws-sdk');
-const InternalException = require('../exceptions/Internal');
+const InternalException = require('../exception/Internal');
 
 const polly = new AWS.Polly({
   signatureVersion: 'v4',

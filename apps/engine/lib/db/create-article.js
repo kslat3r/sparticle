@@ -1,6 +1,6 @@
 const AWS = require('aws-sdk');
 const uuid = require('uuid');
-const InternalException = require('../exceptions/Internal');
+const InternalException = require('../exception/Internal');
 
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 

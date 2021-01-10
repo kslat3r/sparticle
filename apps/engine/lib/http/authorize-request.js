@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const jwtConfig = require('../../config/jwt');
-const UnauthorizedException = require('../exceptions/Unauthorized');
+const UnauthorizedException = require('../exception/Unauthorized');
 
 module.exports = event => {
   if (!event.headers || !event.headers.authorization) {

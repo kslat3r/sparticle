@@ -1,7 +1,8 @@
 const authorizeRequest = require('./http/authorize-request');
 const getArticleById = require('./db/get-article-by-id');
 const getTaskById = require('./speech/get-task-by-id');
-const RequestException = require('./exceptions/Request');
+const RequestException = require('./exception/Request');
+const ForbiddenException = require('./exception/Forbidden');
 
 module.exports = async (event) => {
   // authorize
@@ -30,6 +31,12 @@ module.exports = async (event) => {
     article = await getArticleById(id);
   } catch (e) {
     throw e;
+  }
+
+  // does article belong to logged in user?
+
+  if (sessionId !== article.sessionId) {
+    throw new ForbiddenException('User does not have access to this article');
   }
 
   // get task
