@@ -43,11 +43,13 @@ provider:
       Resource: "arn:aws:s3:::sparticle-engine-prod-audio/*"
     - Effect: Allow
       Action:
-        - dynamodb:Query
-        - dynamodb:Scan
         - dynamodb:GetItem
         - dynamodb:PutItem
       Resource: "arn:aws:dynamodb:eu-west-2:690524749915:table/articles"
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+      Resource: "arn:aws:dynamodb:eu-west-2:690524749915:table/articles/index/articleUrlIndex"
 
 # you can define service wide environment variables here
 #  environment:
