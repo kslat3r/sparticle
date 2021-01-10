@@ -1,7 +1,6 @@
 const authorizeRequest = require('./http/authorize-request');
 const getArticlesBySessionId = require('./db/get-articles-by-session-id');
 const getTaskById = require('./speech/get-task-by-id');
-const RequestException = require('./exceptions/Request');
 
 module.exports = async (event) => {
   // authorize
