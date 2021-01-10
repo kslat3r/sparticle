@@ -1,19 +1,28 @@
 const isBase64 = require('is-base64');
 const isValidHttpUrl = require('is-valid-http-url');
-const mutateUrl = require('./url/mutate');
-const getArticleByUrl = require('./db/get-article-by-url');
-const getTaskById = require('./speech/get-task-by-id');
+const authorizeRequest = require('./http/authorize-request');
+const mutateUrl = require('./url/mutate-url');
 const getHtmlFromUrl = require('./html/get-html-from-url');
 const getContentFromHtml = require('./content/get-content-from-html');
 const getSsmlFromContent = require('./ssml/get-ssml-from-content');
-const mutateSsml = require('./ssml/mutate');
+const mutateSsml = require('./ssml/mutate-ssml');
 const createTask = require('./speech/create-task');
 const createArticle = require('./db/create-article');
-const RequestException = require('../exceptions/Request');
-const InternalException = require('../exceptions/Internal');
+const RequestException = require('./exceptions/Request');
+const InternalException = require('./exceptions/Internal');
 
 module.exports = async (event) => {
-  // validation
+  // authorize
+
+  let sessionId;
+
+  try {
+    sessionId = authorizeRequest(event);
+  } catch (e) {
+    throw e;
+  }
+
+  // validate
   
   if (event.body === undefined) {
     throw new RequestException('Mandatory request body is missing');
@@ -47,74 +56,52 @@ module.exports = async (event) => {
 
   url = mutateUrl(url);
 
-  // get article by url
+  // get url contents
 
-  let article;
-  
+  let html;
+
   try {
-    article = await getArticleByUrl(url);
-  } catch (e) {}
+    html = await getHtmlFromUrl(url);
+  } catch (e) {
+    throw new InternalException(e.message);
+  }
 
-  // if article exists, otherwise
+  // get content
 
-  let task;
+  let content;
 
-  if (article) {
-    // get task
+  try {
+    content = getContentFromHtml(html);
+  } catch (e) {
+    throw new InternalException(e.message);
+  }
 
-    try {
-      task = await getTaskById(article.pollyTaskId);
-    } catch (e) {
-      throw e;
-    }    
-  } else {
-    // get url contents
+  // convert to ssml
 
-    let html;
+  let ssml;
 
-    try {
-      html = await getHtmlFromUrl(url);
-    } catch (e) {
-      throw new InternalException(e.message);
-    }
+  try {
+    ssml = getSsmlFromContent(content);
+  } catch (e) {
+    throw new InternalException(e.message);
+  }
 
-    // get content
+  ssml = mutateSsml(url, ssml);
 
-    let content;
+  // create task
 
-    try {
-      content = getContentFromHtml(html);
-    } catch (e) {
-      throw new InternalException(e.message);
-    }
+  try {
+    task = await createTask(ssml);
+  } catch (e) {
+    throw e;
+  }
 
-    // convert to ssml
+  // create article
 
-    let ssml;
-
-    try {
-      ssml = getSsmlFromContent(content);
-    } catch (e) {
-      throw new InternalException(e.message);
-    }
-
-    ssml = mutateSsml(url, ssml);
-
-    // create task
-
-    try {
-      task = await createTask(ssml);
-    } catch (e) {
-      throw e;
-    }
-
-    // create article
-
-    try {
-      article = await createArticle(task, url);
-    } catch (e) {
-      throw e;
-    }
+  try {
+    article = await createArticle(task, url, sessionId);
+  } catch (e) {
+    throw e;
   }
 
   // add latest status

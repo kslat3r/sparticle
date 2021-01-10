@@ -1,21 +1,14 @@
 const getArticle = require('../lib/get-article');
+const sendResponse = require('../lib/http/send-response');
 
 module.exports = async event => {
   try {
     const article = await getArticle(event);
 
-    return {
-      statusCode: 200,
-      body: JSON.stringify(article)
-    };
+    return sendResponse(200, article);
   } catch (e) {
     console.error(e);
 
-    return {
-      statusCode: e.httpStatusCode || 500,
-      body: JSON.stringify({
-        message: e.message
-      })
-    };
+    return sendResponse(e.httpStatusCode || 500, { message: e.message });
   }
 };

@@ -1,6 +1,6 @@
 const AWS = require('aws-sdk');
-const InternalException = require('../../exceptions/Internal');
-const NotFoundException = require('../../exceptions/NotFound');
+const InternalException = require('../exceptions/Internal');
+const NotFoundException = require('../exceptions/NotFound');
 
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 

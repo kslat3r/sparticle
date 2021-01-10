@@ -1,11 +1,11 @@
-const createArticle = require('../lib/create-article');
+const authorize = require('../lib/authorize');
 const sendResponse = require('../lib/http/send-response');
 
-module.exports = async event => {
+module.exports = async (event) => {
   try {
-    const article = await createArticle(event);
+    const token = authorize(event);
 
-    return sendResponse(201, article);
+    return sendResponse(201, token);
   } catch (e) {
     console.error(e);
 
