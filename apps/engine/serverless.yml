@@ -50,6 +50,10 @@ provider:
       Action:
         - dynamodb:Query
       Resource: "arn:aws:dynamodb:eu-west-2:690524749915:table/articles/index/sessionIdIndex"
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+      Resource: "arn:aws:dynamodb:eu-west-2:690524749915:table/articles/index/encodedUrlIndex"
 
 # you can define service wide environment variables here
 #  environment:
@@ -67,24 +71,32 @@ provider:
 functions:
   authorize:
     handler: handler.authorize
+    environment: 
+      JWT_SECRET_KEY: ${ssm:/jwt-secret-key~true}
     events:
       - httpApi:
           path: /authorize
           method: post
   createArticle:
     handler: handler.createArticle
+    environment: 
+      JWT_SECRET_KEY: ${ssm:/jwt-secret-key~true}
     events:
       - httpApi:
           path: /articles
           method: post
   getArticles:
     handler: handler.getArticles
+    environment: 
+      JWT_SECRET_KEY: ${ssm:/jwt-secret-key~true}
     events:
       - httpApi:
           path: /articles
           method: get
   getArticle:
     handler: handler.getArticle
+    environment: 
+      JWT_SECRET_KEY: ${ssm:/jwt-secret-key~true}
     events:
       - httpApi:
           path: /articles/{id}

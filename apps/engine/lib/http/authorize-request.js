@@ -1,8 +1,13 @@
 const jwt = require('jsonwebtoken');
 const jwtConfig = require('../../config/jwt');
+const InternalException = require('../exception/Internal');  
 const UnauthorizedException = require('../exception/Unauthorized');
 
 module.exports = event => {
+  if (jwtConfig.secret === undefined || jwtConfig.secret === '') {
+    throw new InternalException('Could not read JWT secret');
+  }
+  
   if (!event.headers || !event.headers.authorization) {
     throw new UnauthorizedException('Missing Authorization header');
   }

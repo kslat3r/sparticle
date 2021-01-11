@@ -3,9 +3,12 @@ const sendResponse = require('../lib/http/send-response');
 
 module.exports = async event => {
   try {
-    const article = await createArticle(event);
+    const {
+      statusCode,
+      article
+    } = await createArticle(event);
 
-    return sendResponse(201, article);
+    return sendResponse(statusCode, article);
   } catch (e) {
     console.error(e);
 
