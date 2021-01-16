@@ -1,4 +1,5 @@
-import { observable, makeObservable, action } from 'mobx';
+import { observable, makeObservable, action, runInAction } from 'mobx';
+import makeRequest from '../helpers/makeRequest';
 
 class AuthorisationStore {
   @observable token = null
@@ -10,43 +11,42 @@ class AuthorisationStore {
   }
 
   @action async fetch () {
-    this.token = localStorage.getItem('token');
+    let token = localStorage.getItem('token');
 
-    if (this.token) {
+    if (token) {
+      runInAction(() => {
+        this.token = token;
+      });
+
       return;
     }
 
-    this.requesting = true;
-    this.error = false;
+    runInAction(() => {
+      this.requesting = true;
+      this.error = false;
+    });
 
-    let response;
     let body;
-    let token;
 
     try {
-      response = await fetch(`${process.env.REACT_APP_API_HOST}/authorize`, { method: 'POST' });
-      body = await response.json();
+      body = await makeRequest(`${process.env.REACT_APP_API_HOST}/authorize`, { method: 'POST' });
       token = body.token;
     } catch (e) {
-      this.requesting = false;
-      this.error = e.message;
+      runInAction(() => {
+        this.requesting = false;
+        this.error = e.message;
+      });
 
       return;
     }
 
     localStorage.setItem('token', token);
 
-    this.token = token;
-    this.requesting = false;
-    this.error = false;
-  }
-
-  @action reset () {
-    window.localStorage.removeItem('token');
-
-    this.token = null;
-    this.requesting = false;
-    this.error = false;
+    runInAction(() => {
+      this.token = token;
+      this.requesting = false;
+      this.error = false;
+    });
   }
 }
 
