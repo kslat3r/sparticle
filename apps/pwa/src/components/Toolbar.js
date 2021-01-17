@@ -18,6 +18,9 @@ const styles = (theme) => ({
   title: {
     flexGrow: 1,
   },
+  toolbar: {
+    paddingRight: theme.spacing(1),
+  }
 });
 
 class ComponentWithToolbar extends React.Component {
@@ -33,7 +36,9 @@ class ComponentWithToolbar extends React.Component {
       <AppBar
         position="static"
       >
-        <Toolbar>
+        <Toolbar
+          className={classes.toolbar}
+        >
           {onBackClick ? (
             <IconButton
               edge="start"

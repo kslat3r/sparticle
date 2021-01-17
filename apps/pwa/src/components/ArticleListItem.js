@@ -2,10 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import ListItem from '@material-ui/core/ListItem';
+import Link from '@material-ui/core/Link';
 import ListItemText from '@material-ui/core/ListItemText';
-import IconButton from '@material-ui/core/IconButton';
-import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import { Media } from 'react-media-player';
+import ArticlePlayer from './ArticlePlayer';
 
 const styles = theme => ({
   root: {
@@ -17,7 +18,7 @@ const styles = theme => ({
   button: {
     marginRight: theme.spacing(0)
   }
-})
+});
 
 const ArticleListItem = props => {
   const {
@@ -32,17 +33,22 @@ const ArticleListItem = props => {
 
   return (
     <ListItem>
-      <ListItemText
-        className={classes.text}
-        primary={item.decodedUrl}
-        secondary={`${timeString} ${dateString}`}
-      />
+      <Link
+        href={item.decodedUrl}
+        target="_new"
+      >
+        <ListItemText
+          className={classes.text}
+          primary={item.decodedUrl}
+          secondary={`${timeString} ${dateString}`}
+        />
+      </Link>
       <ListItemSecondaryAction>
-        <IconButton
-          className={classes.button}
-        >
-          <PlayArrowIcon />
-        </IconButton>
+        <Media>
+          <ArticlePlayer
+            item={item}
+          />
+        </Media>
       </ListItemSecondaryAction>
     </ListItem>
   );

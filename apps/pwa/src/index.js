@@ -6,6 +6,7 @@ import { Provider } from 'mobx-react';
 import { Router, Switch, Route, Redirect } from 'react-router';
 import articlesStore from './stores/articles';
 import authorisationStore from './stores/authorisation';
+import mediaStore from './stores/media';
 import routingStore from './stores/routing';
 import Articles from './containers/Articles';
 import CreateArticles from './containers/CreateArticles';
@@ -14,6 +15,7 @@ import './index.css';
 const stores = {
   articlesStore,
   authorisationStore,
+  mediaStore,
   routingStore
 };
 
