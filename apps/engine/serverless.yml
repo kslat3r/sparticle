@@ -48,6 +48,7 @@ provider:
       Action:
         - dynamodb:GetItem
         - dynamodb:PutItem
+        - dynamodb:DeleteItem
       Resource: "arn:aws:dynamodb:eu-west-2:690524749915:table/articles"
     - Effect: Allow
       Action:
@@ -92,6 +93,14 @@ functions:
       - httpApi:
           path: /articles/{id}
           method: get
+  deleteArticle:
+    handler: handler.deleteArticle
+    environment: 
+      JWT_SECRET_KEY: ${ssm:/jwt-secret-key~true}
+    events:
+      - httpApi:
+          path: /articles/{id}
+          method: delete
   updateAudioAcl:
     handler: handler.updateAudioAcl
     events:

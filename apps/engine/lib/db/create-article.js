@@ -3,11 +3,13 @@ const InternalException = require('../exception/Internal');
 
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
-module.exports = async (id, sessionId, encodedUrl, decodedUrl, task) => {
+module.exports = async (id, sessionId, siteName, title, encodedUrl, decodedUrl, task) => {
   const article = {
     id,
     created: new Date().getTime(),
     sessionId,
+    siteName,
+    title,
     encodedUrl,
     decodedUrl,
     pollyTaskId: task.SynthesisTask.TaskId,

@@ -52,14 +52,14 @@ class Articles extends React.Component {
           />
         ) : null}
 
-        {!requesting && !error && !items.length ? (
+        {!requesting && !items.length ? (
           <InfoDialog
             title="You don't have any articles right now"
             message="Click the button in the top right to add a new article"
           />
         ) : null}
 
-        {!requesting && !error && items.length ? (
+        {!requesting && items.length ? (
           <ArticleList
             items={items}
           />

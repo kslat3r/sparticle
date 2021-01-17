@@ -12,6 +12,7 @@ module.exports = async sessionId => {
       TableName: 'articles',
       IndexName: 'sessionIdIndex',
       KeyConditionExpression: 'sessionId = :sessionId',
+      ScanIndexForward: true,
       ExpressionAttributeValues: {
         ':sessionId': {
           'S': sessionId
@@ -23,6 +24,8 @@ module.exports = async sessionId => {
   }
 
   const items = response.Items.map(item => AWS.DynamoDB.Converter.unmarshall(item));
+
+  items.forEach(item => console.log(new Date(item.created)));
 
   return items;
 };

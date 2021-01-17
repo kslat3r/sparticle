@@ -4,6 +4,7 @@ import { inject } from 'mobx-react';
 import { withStyles } from '@material-ui/core/styles';
 import { Player, withMediaProps } from 'react-media-player';
 import IconButton from '@material-ui/core/IconButton';
+import DeleteIcon from '@material-ui/icons/Delete';
 import RestoreIcon from '@material-ui/icons/Restore';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import PauseIcon from '@material-ui/icons/Pause';
@@ -13,6 +14,10 @@ const styles = theme => ({
   button: {
     zIndex: 2,
     marginLeft: theme.spacing(1)
+  },
+  buttonMargin: {
+    zIndex: 2,
+    marginRight: theme.spacing(0.5)
   },
   progressContainer: {
     width: 48,
@@ -31,12 +36,15 @@ const styles = theme => ({
   }
 });
 
+@inject('articlesStore')
+@inject('authorisationStore')
 @inject('mediaStore')
 class ArticlePlayer extends React.Component {
   constructor (props) {
     super(props);
 
     this.onReady = this.onReady.bind(this);
+    this.onDelete = this.onDelete.bind(this);
     this.onReset = this.onReset.bind(this);
     this.onClick = this.onClick.bind(this);
     this.onTimeUpdate = this.onTimeUpdate.bind(this);
@@ -62,6 +70,18 @@ class ArticlePlayer extends React.Component {
 
       this.props.mediaStore.onReady(id);
     }
+  }
+
+  onDelete () {
+    const {
+      token
+    } = this.props.authorisationStore;
+
+    const {
+      id
+    } = this.props.item;
+
+    this.props.articlesStore.delete(token, id);
   }
 
   onReset () {
@@ -124,6 +144,13 @@ class ArticlePlayer extends React.Component {
           <React.Fragment>
             <IconButton
               className={classes.button}
+              onClick={this.onDelete}
+            >
+              <DeleteIcon />
+            </IconButton>
+
+            <IconButton
+              className={classes.buttonMargin}
               onClick={this.onReset}
             >
               <RestoreIcon />
@@ -160,16 +187,16 @@ class ArticlePlayer extends React.Component {
                 value={playedDuration}
               />
             </div>
+
+            <Player
+              src={item.s3ObjectUrl}
+              vendor="audio"
+              autoPlay={false}
+              onReady={this.onReady}
+              onTimeUpdate={this.onTimeUpdate}
+            />
           </React.Fragment>
         ) : null}
-
-        <Player
-          src={item.s3ObjectUrl}
-          vendor="audio"
-          autoPlay={false}
-          onReady={this.onReady}
-          onTimeUpdate={this.onTimeUpdate}
-        />
       </React.Fragment>
     );
   }

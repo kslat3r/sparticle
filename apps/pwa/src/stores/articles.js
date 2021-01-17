@@ -77,6 +77,32 @@ class ArticlesStore {
       this.error = false;
     });
   }
+
+  @action async delete(token, id) {
+    runInAction(() => {
+      this.items = this.items.filter(item => item.id !== id);
+      this.error = false;
+    });
+
+    try {
+      await makeRequest(`${process.env.REACT_APP_API_HOST}/articles/${id}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: token
+        }
+      });
+    } catch (e) {
+      runInAction(() => {
+        this.error = e.message;
+      });
+
+      return;
+    }
+
+    runInAction(() => {
+      this.error = false;
+    });
+  }
 }
 
 export default new ArticlesStore()

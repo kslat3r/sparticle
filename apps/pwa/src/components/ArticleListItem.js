@@ -4,6 +4,7 @@ import { withStyles } from '@material-ui/core/styles';
 import ListItem from '@material-ui/core/ListItem';
 import Link from '@material-ui/core/Link';
 import ListItemText from '@material-ui/core/ListItemText';
+import Typography from '@material-ui/core/Typography';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import { Media } from 'react-media-player';
 import ArticlePlayer from './ArticlePlayer';
@@ -17,6 +18,9 @@ const styles = theme => ({
   },
   button: {
     marginRight: theme.spacing(0)
+  },
+  inline: {
+    display: 'inline',
   }
 });
 
@@ -39,8 +43,21 @@ const ArticleListItem = props => {
       >
         <ListItemText
           className={classes.text}
-          primary={item.decodedUrl}
-          secondary={`${timeString} ${dateString}`}
+          primary={`${item.siteName} - ${item.title}`}
+          secondary={
+            <React.Fragment>
+              <Typography
+                component="span"
+                variant="body2"
+                className={classes.inline}
+                color="textPrimary"
+              >
+                {`${timeString} ${dateString}`}
+              </Typography>
+              <br/>
+               {item.decodedUrl}
+            </React.Fragment>
+          }
         />
       </Link>
       <ListItemSecondaryAction>

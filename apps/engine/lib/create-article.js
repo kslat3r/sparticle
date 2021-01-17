@@ -95,7 +95,7 @@ module.exports = async (event) => {
     let article;
 
     try {
-      article = await createArticle(id, sessionId, encodedUrl, encodedArticle.decodedUrl, task);
+      article = await createArticle(id, sessionId, encodedArticle.siteName, encodedArticle.title, encodedUrl, encodedArticle.decodedUrl, task);
     } catch (e) {
       throw e;
     }
@@ -135,6 +135,11 @@ module.exports = async (event) => {
     throw new InternalException(e.message);
   }
 
+  const {
+    siteName,
+    title
+  } = content;
+
   // convert to ssml
 
   let ssml;
@@ -162,7 +167,7 @@ module.exports = async (event) => {
   let article;
 
   try {
-    article = await createArticle(id, sessionId, encodedUrl, decodedUrl, task);
+    article = await createArticle(id, sessionId, siteName, title, encodedUrl, decodedUrl, task);
   } catch (e) {
     throw e;
   }
