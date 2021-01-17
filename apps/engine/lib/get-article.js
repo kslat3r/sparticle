@@ -2,6 +2,7 @@ const authorizeRequest = require('./http/authorize-request');
 const getArticleById = require('./db/get-article-by-id');
 const getTaskById = require('./speech/get-task-by-id');
 const RequestException = require('./exception/Request');
+const NotFoundException = require('./exception/NotFound');
 const ForbiddenException = require('./exception/Forbidden');
 
 module.exports = async (event) => {
@@ -31,6 +32,12 @@ module.exports = async (event) => {
     article = await getArticleById(id);
   } catch (e) {
     throw e;
+  }
+
+  // has the article been soft deleted?
+
+  if (article.deleted) {
+    throw new NotFoundException('Not found');
   }
 
   // does article belong to logged in user?

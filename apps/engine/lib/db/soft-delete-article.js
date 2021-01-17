@@ -4,29 +4,34 @@ const NotFoundException = require('../exception/NotFound');
 
 const dynamoDb = new AWS.DynamoDB();
 
-module.exports = async sessionId => {
+module.exports = async article => {
   let response;
 
   try {
-    response = await dynamoDb.query({
+    await dynamoDb.updateItem({
       TableName: 'articles',
-      KeyConditionExpression: 'sessionId = :sessionId',
-      FilterExpression : 'deleted = :deleted',
-      ExpressionAttributeValues: {
-        ':sessionId': {
-          'S': sessionId
+      Key: {
+        sessionId: {
+          S: article.sessionId
         },
-        ':deleted': {
-          BOOL: false
+        created: {
+          N: article.created.toString()
         }
       },
-      ScanIndexForward: false
+      ConditionExpression: 'id = :id',
+      UpdateExpression: 'set deleted = :deleted',
+      ExpressionAttributeValues: {
+        ':id': {
+          S: article.id,
+        },
+        ':deleted': {
+          BOOL: true
+        }
+      },
     }).promise();
   } catch (e) {
     throw new InternalException(e.message);
   }
 
-  const items = response.Items.map(item => AWS.DynamoDB.Converter.unmarshall(item));
-
-  return items;
+  return;
 };

@@ -1,9 +1,9 @@
-const deleteArticle = require('../lib/delete-article');
+const softDeleteArticle = require('../lib/soft-delete-article');
 const sendResponse = require('../lib/http/send-response');
 
 module.exports = async event => {
   try {
-    await deleteArticle(event);
+    await softDeleteArticle(event);
 
     return sendResponse(200);
   } catch (e) {

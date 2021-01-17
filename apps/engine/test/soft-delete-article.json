@@ -1,0 +1,8 @@
+{
+  "headers": {
+    "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzZXNzaW9uSWQiOiJkZTAwY2E4Ni0wNDQ0LTQ3ZDctYTk5MC0wYmM5N2E4NTUzZjMiLCJpYXQiOjE2MTA4OTMyMzR9.n04uUjqZHMhIAUUQ58ZFNOISpMxyroaNccm8dDD6d5Q"
+  },
+  "pathParameters": {
+    "id": "234d05da-6ec3-4fd1-8eb0-0f6863ac4bd4"
+  }
+}

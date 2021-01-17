@@ -1,6 +1,6 @@
 const authorizeRequest = require('./http/authorize-request');
 const getArticleById = require('./db/get-article-by-id');
-const deleteArticleById = require('./db/delete-article-by-id');
+const softDeleteArticle = require('./db/soft-delete-article');
 const RequestException = require('./exception/Request');
 const ForbiddenException = require('./exception/Forbidden');
 
@@ -39,10 +39,10 @@ module.exports = async (event) => {
     throw new ForbiddenException('User does not have access to this article');
   }
 
-  // delete article
+  // soft delete article
 
   try {
-    await deleteArticleById(id);
+    await softDeleteArticle(article);
   } catch (e) {
     throw e;
   }
