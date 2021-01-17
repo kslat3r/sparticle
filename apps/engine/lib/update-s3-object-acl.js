@@ -1,6 +1,6 @@
 const makeObjectPublic = require('./storage/make-object-public');
 const getArticleByPollyTaskId = require('./db/get-article-by-polly-task-id');
-const updateArticleAccessible = require('./db/update-article-accessible');
+const updateArticleAccessibility = require('./db/update-article-accessibility');
 
 module.exports = async (event) => {
   if (event.Records === undefined) {
@@ -34,7 +34,7 @@ module.exports = async (event) => {
   }
 
   try {
-    await updateArticleAccessible(article, true);
+    await updateArticleAccessibility(article, true);
   } catch (e) {
     throw e;
   }

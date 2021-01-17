@@ -140,9 +140,7 @@ class ArticlesStore {
 
           delete this.intervals[item.id];
 
-          // update article in list (in 5 seconds, to avoid permission problems)
-
-          console.log(article);
+          // update article in list
 
           runInAction(() => {
             this.items.splice(this.items.findIndex(item => item.id === article.id), 1, article);

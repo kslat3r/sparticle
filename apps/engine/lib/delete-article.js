@@ -1,6 +1,6 @@
 const authorizeRequest = require('./http/authorize-request');
 const getArticleById = require('./db/get-article-by-id');
-const softDeleteArticle = require('./db/soft-delete-article');
+const deleteArticle = require('./db/delete-article');
 const RequestException = require('./exception/Request');
 const ForbiddenException = require('./exception/Forbidden');
 
@@ -42,7 +42,7 @@ module.exports = async (event) => {
   // soft delete article
 
   try {
-    await softDeleteArticle(article);
+    await deleteArticle(article);
   } catch (e) {
     throw e;
   }

@@ -101,8 +101,8 @@ functions:
       - httpApi:
           path: /articles/{id}
           method: get
-  softDeleteArticle:
-    handler: handler.softDeleteArticle
+  deleteArticle:
+    handler: handler.deleteArticle
     environment: 
       JWT_SECRET_KEY: ${ssm:/jwt-secret-key~true}
     events:
@@ -113,8 +113,8 @@ functions:
     handler: handler.updateArticleStatus
     events:
       - sns: arn:aws:sns:eu-west-2:690524749915:sparticle-polly-task-updates
-  updateAudioAcl:
-    handler: handler.updateAudioAcl
+  updateS3ObjectAcl:
+    handler: handler.updateS3ObjectAcl
     events:
       - s3:
           bucket: sparticle-engine-prod-audio

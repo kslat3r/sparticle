@@ -4,7 +4,7 @@ const NotFoundException = require('../exception/NotFound');
 
 const dynamoDb = new AWS.DynamoDB();
 
-module.exports = async (article, pollyTaskStatus) => {
+module.exports = async (article, status) => {
   let response;
 
   try {
@@ -25,7 +25,7 @@ module.exports = async (article, pollyTaskStatus) => {
           S: article.id,
         },
         ':pollyTaskStatus': {
-          S: pollyTaskStatus
+          S: status
         }
       },
     }).promise();
