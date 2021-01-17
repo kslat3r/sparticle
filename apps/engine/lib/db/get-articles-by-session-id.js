@@ -10,22 +10,19 @@ module.exports = async sessionId => {
   try {
     response = await dynamoDb.query({
       TableName: 'articles',
-      IndexName: 'sessionIdIndex',
       KeyConditionExpression: 'sessionId = :sessionId',
-      ScanIndexForward: true,
       ExpressionAttributeValues: {
         ':sessionId': {
           'S': sessionId
         }
-      }
+      },
+      ScanIndexForward: false
     }).promise();
   } catch (e) {
     throw new InternalException(e.message);
   }
 
   const items = response.Items.map(item => AWS.DynamoDB.Converter.unmarshall(item));
-
-  items.forEach(item => console.log(new Date(item.created)));
 
   return items;
 };

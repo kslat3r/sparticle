@@ -5,14 +5,10 @@ resource "aws_s3_bucket" "sparticle-engine-prod-audio" {
 
 resource "aws_dynamodb_table" "sparticle-articles" {
   name = "articles"
-  hash_key = "id"
+  hash_key = "sessionId"
+  range_key = "created"
   read_capacity = 5
   write_capacity = 5
-
-  attribute {
-    name = "id"
-    type = "S"
-  }
 
   attribute {
     name = "sessionId"
@@ -20,26 +16,34 @@ resource "aws_dynamodb_table" "sparticle-articles" {
   }
 
   attribute {
-    name = "encodedUrl"
-    type = "S"
+    name = "created"
+    type = "N"
   }
 
   global_secondary_index {
-    hash_key = "sessionId"
-    name = "sessionIdIndex"
-    non_key_attributes = []
+    hash_key = "id"
+    name = "idIndex"
     projection_type = "ALL"
     read_capacity = 5
     write_capacity = 5
+  }
+
+  attribute {
+    name = "id"
+    type = "S"
   }
 
   global_secondary_index {
     hash_key = "encodedUrl"
     name = "encodedUrlIndex"
-    non_key_attributes = []
     projection_type = "ALL"
     read_capacity = 5
     write_capacity = 5
+  }
+
+  attribute {
+    name = "encodedUrl"
+    type = "S"
   }
 }
 
