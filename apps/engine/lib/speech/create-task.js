@@ -16,7 +16,8 @@ module.exports = async ssml => {
       VoiceId: 'Amy',
       OutputFormat: 'mp3',
       SampleRate: '16000',
-      OutputS3BucketName: 'sparticle-engine-prod-audio'
+      OutputS3BucketName: 'sparticle-engine-prod-audio',
+      SnsTopicArn: 'arn:aws:sns:eu-west-2:690524749915:sparticle-polly-task-updates'
     }).promise();
   } catch (e) {
     throw new InternalException(e.message);

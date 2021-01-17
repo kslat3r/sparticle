@@ -6,9 +6,11 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 const styles = (theme) => ({
   backdrop: {
-    zIndex: theme.zIndex.drawer + 1,
-    color: '#fff',
+    zIndex: theme.zIndex.drawer + 1
   },
+  progress: {
+    color: '#fff'
+  }
 });
 
 const LoadingDialog = props => {
@@ -21,7 +23,9 @@ const LoadingDialog = props => {
       className={classes.backdrop}
       open={true}
     >
-      <CircularProgress />
+      <CircularProgress
+        className={classes.progress}
+      />
     </Backdrop>
   );
 }

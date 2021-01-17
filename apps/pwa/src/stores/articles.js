@@ -7,6 +7,9 @@ class ArticlesStore {
   @observable requesting = false;
   @observable error = false;
 
+  refreshTimeout = 5000;
+  intervals = {};
+
   constructor () {
     makeObservable(this);
   }
@@ -17,10 +20,10 @@ class ArticlesStore {
       this.error = false;
     });
 
-    let body;
+    let items;
 
     try {
-      body = await makeRequest(`${process.env.REACT_APP_API_HOST}/articles`, {
+      items = await makeRequest(`${process.env.REACT_APP_API_HOST}/articles`, {
         method: 'GET',
         headers: {
           Authorization: token
@@ -35,8 +38,17 @@ class ArticlesStore {
       return;
     }
 
+    // poll updated to scheduled polly tasks
+
+    this.pollItemsForCompletion(token, items.filter(item =>
+      item.pollyTaskStatus === 'UNKNOWN' ||
+      item.pollyTaskStatus === 'SCHEDULED' ||
+      item.pollyTaskStatus === 'INPROGRESS' ||
+      (item.pollyTaskStatus === 'COMPLETED' && !item.s3ObjectAccessible)
+    ));
+
     runInAction(() => {
-      this.items = body;
+      this.items = items;
       this.requesting = false;
       this.error = false;
     });
@@ -48,10 +60,8 @@ class ArticlesStore {
       this.error = false;
     });
 
-    let items;
-
     try {
-      items = await Promise.all(urls.map(url => makeRequest(`${process.env.REACT_APP_API_HOST}/articles`, {
+      await Promise.all(urls.map(url => makeRequest(`${process.env.REACT_APP_API_HOST}/articles`, {
         method: 'POST',
         headers: {
           Authorization: token,
@@ -72,7 +82,6 @@ class ArticlesStore {
     }
 
     runInAction(() => {
-      this.items = items;
       this.requesting = false;
       this.error = false;
     });
@@ -102,6 +111,47 @@ class ArticlesStore {
     runInAction(() => {
       this.error = false;
     });
+  }
+
+  pollItemsForCompletion (token, items) {
+    items.forEach(item => {
+      const interval = setInterval(async () => {
+        // make request
+
+        let article;
+
+        try {
+          article = await makeRequest(`${process.env.REACT_APP_API_HOST}/articles/${item.id}`, {
+            method: 'GET',
+            headers: {
+              Authorization: token
+            }
+          });
+        } catch (e) {}
+
+        // has the article completed?
+
+        if ((article.pollyTaskStatus === 'COMPLETED' && article.s3ObjectAccessible) || article.pollyTaskStatus === 'FAILED') {
+          // clear interval
+
+          clearInterval(this.intervals[item.id]);
+
+          // remove interval from array
+
+          delete this.intervals[item.id];
+
+          // update article in list (in 5 seconds, to avoid permission problems)
+
+          console.log(article);
+
+          runInAction(() => {
+            this.items.splice(this.items.findIndex(item => item.id === article.id), 1, article);
+          });
+        }
+      }, this.refreshTimeout);
+
+      this.intervals[item.id] = interval;
+    })
   }
 }
 

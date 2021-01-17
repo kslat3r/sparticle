@@ -14,8 +14,10 @@ module.exports = async (id, sessionId, siteName, title, encodedUrl, decodedUrl, 
     decodedUrl,
     pollyTaskId: task.SynthesisTask.TaskId,
     pollyCharacterLength: task.SynthesisTask.RequestCharacters,
+    pollyTaskStatus: 'SCHEDULED',
     s3ObjectUrl: task.SynthesisTask.OutputUri,
     s3ObjectContentType: task.SynthesisTask.OutputFormat,
+    s3ObjectAccessible: false,
     deleted: false
   };
 

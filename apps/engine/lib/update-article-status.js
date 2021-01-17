@@ -1,6 +1,5 @@
-const makeObjectPublic = require('./storage/make-object-public');
 const getArticleByPollyTaskId = require('./db/get-article-by-polly-task-id');
-const updateArticleAccessible = require('./db/update-article-accessible');
+const updateArticleStatus = require('./db/update-article-status');
 
 module.exports = async (event) => {
   if (event.Records === undefined) {
@@ -14,17 +13,23 @@ module.exports = async (event) => {
   }
 
   const record = event.Records[0];
-  const bucket = record.s3.bucket.name;
-  const key = record.s3.object.key;
+  const message = record.Sns.Message;
+
+  let task;
 
   try {
-    await makeObjectPublic(bucket, key);
+    task = JSON.parse(message);
   } catch (e) {
     throw e;
   }
 
-  const pollyTaskId = key.replace('.mp3', '');
+  const pollyTaskId = task.taskId;
+  const pollyTaskStatus = task.taskStatus;
 
+  if (!pollyTaskId || !pollyTaskStatus) {
+    throw new Exception('Could not ascertain properties from event');
+  }
+  
   let article;
 
   try {
@@ -34,7 +39,7 @@ module.exports = async (event) => {
   }
 
   try {
-    await updateArticleAccessible(article, true);
+    await updateArticleStatus(article, pollyTaskStatus);
   } catch (e) {
     throw e;
   }

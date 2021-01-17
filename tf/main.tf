@@ -45,10 +45,27 @@ resource "aws_dynamodb_table" "sparticle-articles" {
     name = "encodedUrl"
     type = "S"
   }
+
+  global_secondary_index {
+    hash_key = "pollyTaskId"
+    name = "pollyTaskIdIndex"
+    projection_type = "ALL"
+    read_capacity = 5
+    write_capacity = 5
+  }
+
+  attribute {
+    name = "pollyTaskId"
+    type = "S"
+  }
 }
 
 resource "aws_ssm_parameter" "sparticle-jwt-secret-key" {
   name  = "jwt-secret-key"
   type  = "SecureString"
   value = var.jwt-secret-key
+}
+
+resource "aws_sns_topic" "sparticle-polly-task-updates" {
+  name = "sparticle-polly-task-updates"
 }

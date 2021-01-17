@@ -33,6 +33,9 @@ const styles = theme => ({
   progress: {
     position: 'relative',
     marginLeft: -48
+  },
+  failed: {
+    color: theme.palette.secondary.main
   }
 });
 
@@ -132,70 +135,62 @@ class ArticlePlayer extends React.Component {
 
     return (
       <React.Fragment>
-        {item.status !== 'completed' ? (
+        <IconButton
+          className={classes.button}
+          onClick={this.onDelete}
+        >
+          <DeleteIcon />
+        </IconButton>
+
+        <IconButton
+          className={classes.buttonMargin}
+          onClick={this.onReset}
+          disabled={item.pollyTaskStatus === 'COMPLETED' && item.s3ObjectAccessible ? false:  true}
+        >
+          <RestoreIcon />
+        </IconButton>
+
+        <IconButton
+          className={classes.button}
+          onClick={this.onClick}
+          disabled={item.pollyTaskStatus === 'COMPLETED' && item.s3ObjectAccessible ? false:  true}
+        >
+
+          {media.isPlaying ? (
+            <PauseIcon />
+          ) : (
+            <PlayArrowIcon />
+          )}
+        </IconButton>
+
+        <div
+          className={classes.progressContainer}
+        >
           <CircularProgress
-            variant="indeterminate"
+            className={classes.progressBackground}
+            variant="determinate"
             size={48}
             thickness={4}
+            value={100}
           />
-        ) : null}
 
-        {item.status === 'completed' ? (
-          <React.Fragment>
-            <IconButton
-              className={classes.button}
-              onClick={this.onDelete}
-            >
-              <DeleteIcon />
-            </IconButton>
+          <CircularProgress
+            className={item.pollyTaskStatus === 'FAILED' ? [classes.progress, classes.failed].join(' ') : classes.progress}
+            variant={(item.pollyTaskStatus === 'COMPLETED' && item.s3ObjectAccessible) || item.pollyTaskStatus === 'FAILED' ? 'determinate' : 'indeterminate'}
+            size={48}
+            thickness={4}
+            value={item.pollyTaskStatus === 'FAILED' ? 100 : playedDuration}
+          />
+        </div>
 
-            <IconButton
-              className={classes.buttonMargin}
-              onClick={this.onReset}
-            >
-              <RestoreIcon />
-            </IconButton>
-
-            <IconButton
-              className={classes.button}
-              onClick={this.onClick}
-            >
-
-              {media.isPlaying ? (
-                <PauseIcon />
-              ) : (
-                <PlayArrowIcon />
-              )}
-            </IconButton>
-
-            <div
-              className={classes.progressContainer}
-            >
-              <CircularProgress
-                className={classes.progressBackground}
-                variant="determinate"
-                size={48}
-                thickness={4}
-                value={100}
-              />
-
-              <CircularProgress
-                className={classes.progress}
-                variant="determinate"
-                size={48}
-                thickness={4}
-                value={playedDuration}
-              />
-            </div>
-
-            <Player
-              src={item.s3ObjectUrl}
-              vendor="audio"
-              autoPlay={false}
-              onReady={this.onReady}
-              onTimeUpdate={this.onTimeUpdate}
-            />
-          </React.Fragment>
+        {item.pollyTaskStatus === 'COMPLETED' && item.s3ObjectAccessible ? (
+          <Player
+            src={item.s3ObjectUrl}
+            vendor="audio"
+            autoPlay={false}
+            onReady={this.onReady}
+            onTimeUpdate={this.onTimeUpdate}
+          />
         ) : null}
       </React.Fragment>
     );

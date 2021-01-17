@@ -32,7 +32,7 @@ class MediaStore {
       return;
     }
 
-    Object.keys(this.players).forEach(id => this.players[id].pause());
+    Object.keys(this.players).forEach(id => this.players[id] ? this.players[id].pause() : null);
 
     this.players[id].play();
     this.currentlyPlayingId = id;

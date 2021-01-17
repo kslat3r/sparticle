@@ -58,6 +58,14 @@ provider:
       Action:
         - dynamodb:Query
       Resource: "arn:aws:dynamodb:eu-west-2:690524749915:table/articles/index/encodedUrlIndex"
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+      Resource: "arn:aws:dynamodb:eu-west-2:690524749915:table/articles/index/pollyTaskIdIndex"
+    - Effect: Allow
+      Action: 
+        - SNS:Publish
+      Resource: "arn:aws:sns:eu-west-2:690524749915:sparticle-polly-task-updates"
 
 functions:
   authorize:
@@ -101,6 +109,10 @@ functions:
       - httpApi:
           path: /articles/{id}
           method: delete
+  updateArticleStatus:
+    handler: handler.updateArticleStatus
+    events:
+      - sns: arn:aws:sns:eu-west-2:690524749915:sparticle-polly-task-updates
   updateAudioAcl:
     handler: handler.updateAudioAcl
     events:

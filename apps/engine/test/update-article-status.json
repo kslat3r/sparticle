@@ -1,0 +1,7 @@
+{
+  "Records": [{
+    "Sns": {
+      "Message": "{\"taskId\":\"f77f97c4-e955-4b45-ab2c-51ce224dccbc\", \"taskStatus\":\"COMPLETED\"}"
+    }
+  }]
+}

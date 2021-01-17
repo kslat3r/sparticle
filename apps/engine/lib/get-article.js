@@ -1,6 +1,5 @@
 const authorizeRequest = require('./http/authorize-request');
 const getArticleById = require('./db/get-article-by-id');
-const getTaskById = require('./speech/get-task-by-id');
 const RequestException = require('./exception/Request');
 const NotFoundException = require('./exception/NotFound');
 const ForbiddenException = require('./exception/Forbidden');
@@ -46,19 +45,7 @@ module.exports = async (event) => {
     throw new ForbiddenException('User does not have access to this article');
   }
 
-  // get task
-
-  let task;
-  
-  try {
-    task = await getTaskById(article.pollyTaskId);
-  } catch (e) {
-    throw e;
-  }
-
-  // add latest status
-
-  article.status = task.SynthesisTask.TaskStatus;
+  // we're good
 
   return article;
 };

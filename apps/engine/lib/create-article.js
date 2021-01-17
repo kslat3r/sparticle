@@ -3,7 +3,6 @@ const isValidHttpUrl = require('is-valid-http-url');
 const authorizeRequest = require('./http/authorize-request');
 const getArticleById = require('./db/get-article-by-id');
 const getArticleByEncodedUrl = require('./db/get-article-by-encoded-url');
-const getTaskById = require('./speech/get-task-by-id');
 const createArticle = require('./db/create-article');
 const getHtmlFromUrl = require('./html/get-html-from-url');
 const getContentFromHtml = require('./content/get-content-from-html');
@@ -80,16 +79,6 @@ module.exports = async (event) => {
   } catch (e) {}
 
   if (encodedArticle) {
-    // get task
-
-    let task;
-
-    try {
-      task = await getTaskById(encodedArticle.pollyTaskId);
-    } catch (e) {
-      throw e;
-    }
-
     // create article
 
     let article;
@@ -100,9 +89,7 @@ module.exports = async (event) => {
       throw e;
     }
 
-    // add latest status
-
-    article.status = task.SynthesisTask.TaskStatus;
+    // we're done
 
     return { statusCode: 201, article };
   }
@@ -171,10 +158,6 @@ module.exports = async (event) => {
   } catch (e) {
     throw e;
   }
-
-  // add latest status
-
-  article.status = task.SynthesisTask.TaskStatus;
 
   return { statusCode: 201, article };
 };
