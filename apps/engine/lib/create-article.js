@@ -90,8 +90,8 @@ module.exports = async (event) => {
           RequestCharacters: encodedArticle.pollyCharacterLength,
           OutputUri: encodedArticle.s3ObjectUrl,
           OutputFormat: encodedArticle.s3ObjectContentType
-        }, 'COMPLETED', true);
-      });
+        }
+      }, 'COMPLETED', true);
     } catch (e) {
       throw e;
     }
