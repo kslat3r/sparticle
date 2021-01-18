@@ -17,7 +17,7 @@ const styles = theme => ({
   },
   buttonMargin: {
     zIndex: 2,
-    marginRight: theme.spacing(0)
+    marginRight: 12
   },
   progressContainer: {
     width: 48,
@@ -36,9 +36,6 @@ const styles = theme => ({
   },
   failed: {
     color: theme.palette.secondary.main
-  },
-  delete: {
-    marginRight: -12
   }
 });
 
@@ -151,7 +148,7 @@ class ArticlePlayer extends React.Component {
     return (
       <React.Fragment>
         <IconButton
-          className={[classes.button, classes.delete].join(' ')}
+          className={classes.button}
           onClick={this.onDelete}
         >
           <DeleteIcon />
