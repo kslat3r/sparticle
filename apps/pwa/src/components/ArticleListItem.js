@@ -61,8 +61,8 @@ class ArticleListItem extends React.Component {
               >
                 <ListItemText
                   className={classes.text}
-                  primary={`${item.siteName} - ${item.title}`}
-                  secondary={`${timeString} ${dateString}`}
+                  primary={`${item.title}`}
+                  secondary={`Added ${timeString} ${dateString}`}
                 />
               </Link>
             </Grid>

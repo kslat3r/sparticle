@@ -13,11 +13,11 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 const styles = theme => ({
   button: {
     zIndex: 2,
-    marginLeft: theme.spacing(1)
+    marginLeft: theme.spacing(0)
   },
   buttonMargin: {
     zIndex: 2,
-    marginRight: theme.spacing(0.5)
+    marginRight: theme.spacing(0)
   },
   progressContainer: {
     width: 48,
@@ -36,6 +36,9 @@ const styles = theme => ({
   },
   failed: {
     color: theme.palette.secondary.main
+  },
+  delete: {
+    marginRight: -12
   }
 });
 
@@ -148,7 +151,7 @@ class ArticlePlayer extends React.Component {
     return (
       <React.Fragment>
         <IconButton
-          className={classes.button}
+          className={[classes.button, classes.delete].join(' ')}
           onClick={this.onDelete}
         >
           <DeleteIcon />
