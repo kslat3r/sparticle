@@ -38,11 +38,11 @@ jobs:
           name: Install Serverless
           command: |
             sudo npm i -g serverless
-            npm install
       - run:
           name: Deploy
           command: |
             cd apps/engine
+            npm install
             serverless deploy
 
   pwa-build:
