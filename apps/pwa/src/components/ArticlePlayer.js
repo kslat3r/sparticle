@@ -30,6 +30,11 @@ const styles = theme => ({
   },
   failed: {
     color: theme.palette.secondary.main
+  },
+  menu: {
+    '&:hover': {
+      backgroundColor: '#fff'
+    }
   }
 });
 
@@ -206,6 +211,7 @@ class ArticlePlayer extends React.Component {
           disableFocusRipple
           disableRipple
           onClick={this.onMenuClick}
+          className={classes.menu}
         >
           <MoreVertIcon />
         </IconButton>

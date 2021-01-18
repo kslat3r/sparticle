@@ -65,6 +65,7 @@ class CreateArticles extends React.Component {
     if (this.state.urls.length) {
       try {
         await this.props.articlesStore.create(this.props.authorisationStore.token, this.state.urls);
+
         this.props.routingStore.push('/articles');
       } catch (e) {}
     }
