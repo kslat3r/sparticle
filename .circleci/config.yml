@@ -30,7 +30,7 @@ jobs:
           name: Trigger workflows
           command: chmod +x .circleci/monorepo.sh && .circleci/monorepo.sh
 
-  serverless-deploy:
+  engine-deploy:
     executor: node
     steps:
       - checkout
@@ -65,11 +65,11 @@ workflows:
               branches:
                 only: master
 
-  node:
-    when: << pipeline.parameters.node >>
+  engine:
+    when: << pipeline.parameters.engine >>
     jobs:
       - deploy:
-          name: serverless-deploy
+          name: engine-deploy
   
   pwa:
     when: << pipeline.parameters.pwa >>
