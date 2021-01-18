@@ -6,6 +6,8 @@ const deleteArticleHandler = require('./handlers/delete-article');
 const updateArticleStatus = require('./handlers/update-article-status');
 const updateS3ObjectAclHandler = require('./handlers/update-s3-object-acl');
 
+// all the exports
+
 module.exports.authorize = authorizeHandler;
 module.exports.createArticle = createArticleHandler;
 module.exports.getArticles = getArticlesHandler;
