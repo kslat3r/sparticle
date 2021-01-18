@@ -84,7 +84,14 @@ module.exports = async (event) => {
     let article;
 
     try {
-      article = await createArticle(id, sessionId, encodedArticle.siteName, encodedArticle.title, encodedUrl, encodedArticle.decodedUrl, task);
+      article = await createArticle(id, sessionId, encodedArticle.siteName, encodedArticle.title, encodedUrl, encodedArticle.decodedUrl, {
+        SynthesisTask: {
+          TaskId: encodedArticle.pollyTaskId,
+          RequestCharacters: encodedArticle.pollyCharacterLength,
+          OutputUri: encodedArticle.s3ObjectUrl,
+          OutputFormat: encodedArticle.s3ObjectContentType
+        }, 'COMPLETED', true);
+      });
     } catch (e) {
       throw e;
     }
