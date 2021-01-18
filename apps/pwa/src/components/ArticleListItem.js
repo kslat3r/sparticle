@@ -26,6 +26,12 @@ const styles = theme => ({
   },
   deleted: {
     backgroundColor: 'red'
+  },
+  listItem: {
+    paddingLeft: theme.spacing(1)
+  },
+  secondary: {
+    right: 8
   }
 });
 
@@ -47,7 +53,11 @@ class ArticleListItem extends React.Component {
       <Collapse
         in={item.deleted ? false : true}
       >
-        <ListItem>
+        <ListItem
+          className={classes.listItem}
+          divider
+          disableGutters
+        >
           <Grid
             container
           >
@@ -70,7 +80,9 @@ class ArticleListItem extends React.Component {
               item
               xs={5}
             >
-              <ListItemSecondaryAction>
+              <ListItemSecondaryAction
+                className={classes.secondary}
+              >
                 <Media>
                   <ArticlePlayer
                     item={item}
