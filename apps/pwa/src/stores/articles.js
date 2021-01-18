@@ -89,8 +89,8 @@ class ArticlesStore {
 
   @action async delete(token, id) {
     runInAction(() => {
-      this.items = this.items.filter(item => item.id !== id);
       this.error = false;
+      this.items.find(item => item.id === id).deleted = true;
     });
 
     try {

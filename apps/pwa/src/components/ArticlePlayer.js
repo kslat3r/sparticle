@@ -55,60 +55,72 @@ class ArticlePlayer extends React.Component {
     this.state = { ready: false };
   }
 
-  componentDidMount () {
-    const {
-      id
-    } = this.props.item;
-
-    this.props.mediaStore.add(id, this.props.media)
-  }
-
   onReady () {
     if (!this.state.ready) {
       this.setState({ ready: true });
 
       const {
-        id
-      } = this.props.item;
+        item: {
+          id
+        },
+        media
+      } = this.props;
 
-      this.props.mediaStore.onReady(id);
+      this.props.mediaStore.onReady(id, media);
     }
   }
 
   onDelete () {
     const {
-      token
-    } = this.props.authorisationStore;
+      articlesStore,
+      authorisationStore: {
+        token
+      },
+      item: {
+        id
+      },
+      media
+    } = this.props;
 
-    const {
-      id
-    } = this.props.item;
-
-    this.props.articlesStore.delete(token, id);
+    media.pause();
+    articlesStore.delete(token, id);
   }
 
   onReset () {
     const {
-      id
-    } = this.props.item;
+      item: {
+        id
+      },
+      media
+    } = this.props;
 
-    this.props.mediaStore.onReset(id, 0);
+    this.props.mediaStore.onReset(id, media);
   }
 
   onClick () {
     const {
-      id
-    } = this.props.item;
+      item: {
+        id
+      },
+      media,
+      mediaStore
+    } = this.props;
 
-    this.props.mediaStore.onPlayPause(id);
+    mediaStore.onClick(id, media);
   }
 
   onTimeUpdate () {
     const {
-      id
-    } = this.props.item;
+      item: {
+        id
+      },
+      media: {
+        currentTime
+      },
+      mediaStore
+    } = this.props;
 
-    this.props.mediaStore.onTimeUpdate(id, this.props.media.currentTime);
+    mediaStore.onTimeUpdate(id, currentTime);
   }
 
   render () {

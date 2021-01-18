@@ -1,41 +1,36 @@
-import { observable, makeObservable, action } from 'mobx';
+import { makeObservable, action } from 'mobx';
 
 class MediaStore {
-  @observable players = {}
-  @observable currentlyPlayingId = null;
+  currentlyPlayingId = null;
+  currentlyPlaying = null;
 
   constructor () {
     makeObservable(this);
   }
 
-  @action add (id, player) {
-    this.players[id] = player;
-  }
-
-  @action onReady (id) {
+  @action onReady (id, media) {
     const duration = localStorage.getItem(`${id}-duration`);
 
     if (duration) {
-      this.players[id].seekTo(duration);
+      media.seekTo(duration);
     }
   }
 
-  @action onReset (id) {
-    this.players[id].seekTo(0);
+  @action onReset (id, media) {
+    media.seekTo(0);
+
     this.onTimeUpdate(id, 0);
   }
 
-  @action onPlayPause (id) {
-    if (id === this.currentlyPlayingId) {
-      this.players[id].playPause();
-
-      return;
+  @action onClick (id, media) {
+    if (id !== this.currentlyPlayingId && this.currentlyPlaying) {
+      this.currentlyPlaying.pause();
     }
 
-    Object.keys(this.players).forEach(id => this.players[id] ? this.players[id].pause() : null);
+    media.playPause();
 
-    this.players[id].play();
     this.currentlyPlayingId = id;
+    this.currentlyPlaying = media;
   }
 
   @action onTimeUpdate (id, duration) {
