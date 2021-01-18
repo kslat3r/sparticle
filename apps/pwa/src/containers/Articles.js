@@ -42,6 +42,8 @@ class Articles extends React.Component {
           onRightClick={this.onRightClick}
         />
 
+        <h1>Test</h1>
+
         {requesting ? (
           <LoadingDialog />
         ) : null}
