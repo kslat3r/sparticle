@@ -161,7 +161,7 @@ module.exports = async (event) => {
       decodedUrl,
       pollyTaskId: task.SynthesisTask.TaskId,
       pollyCharacterLength: task.SynthesisTask.RequestCharacters,
-      pollyTaskStatus: task.SynthesisTask.TaskStatus,
+      pollyTaskStatus: task.SynthesisTask.TaskStatus.toUpperCase(),
       s3ObjectUrl: task.SynthesisTask.OutputUri,
       s3ObjectContentType: task.SynthesisTask.OutputFormat,
       s3ObjectAccessible: false

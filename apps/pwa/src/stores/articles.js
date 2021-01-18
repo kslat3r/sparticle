@@ -40,6 +40,8 @@ class ArticlesStore {
 
     // poll updated to scheduled polly tasks
 
+    console.log(items);
+
     this.pollItemsForCompletion(token, items.filter(item =>
       item.pollyTaskStatus === 'UNKNOWN' ||
       item.pollyTaskStatus === 'SCHEDULED' ||
