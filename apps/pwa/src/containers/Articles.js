@@ -42,7 +42,7 @@ class Articles extends React.Component {
           onRightClick={this.onRightClick}
         />
 
-        <h1>Test</h1>
+        <h1>Hello, world!</h1>
 
         {requesting ? (
           <LoadingDialog />
