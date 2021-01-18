@@ -35,6 +35,8 @@ class Articles extends React.Component {
       items
     } = this.props.articlesStore;
 
+    const deleted = items.find(item => item.deleted);
+
     return (
       <React.Fragment>
         <Toolbar
@@ -52,7 +54,7 @@ class Articles extends React.Component {
           />
         ) : null}
 
-        {!requesting && !items.length ? (
+        {!requesting && (!items.length || (deleted.length === items.length)) ? (
           <InfoDialog
             title="You don't have any articles right now"
             message="Click the button in the top right to add a new article"
