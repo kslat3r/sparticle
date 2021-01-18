@@ -68,15 +68,12 @@ workflows:
   engine:
     when: << pipeline.parameters.engine >>
     jobs:
-      - deploy:
-          name: engine-deploy
+      - engine-deploy
   
   pwa:
     when: << pipeline.parameters.pwa >>
     jobs:
-      - build:
-          name: pwa-build
-      - deploy:
-          name: pwa-deploy
+      - pwa-build
+      - pwa-deploy:
           requires:
             - pwa-build
