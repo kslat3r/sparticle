@@ -11,10 +11,9 @@ parameters:
     type: boolean
     default: false
 
-executors:
-  node:
-    docker:
-      - image: cimg/node:15.6.0
+orbs:
+  aws-cli: circleci/aws-cli@1.3.2
+  serverless-framework: circleci/serverless-framework@1.0.1
 
 jobs:
   trigger-workflows:
@@ -31,20 +30,12 @@ jobs:
           command: chmod +x .circleci/monorepo.sh && .circleci/monorepo.sh
 
   engine-deploy:
-    executor: node
+    executor: serverless/default
     steps:
       - checkout
-      - run:
-          name: Install Serverless
-          command: |
-            sudo npm i -g serverless
-      - run:
-          name: Deploy
-          command: |
-            cd apps/engine
-            npm install
-            ls
-            serverless deploy
+      - aws-cli/setup
+      - serverless/setup
+      - run: sls deploy 
 
   pwa-build:
     executor: node

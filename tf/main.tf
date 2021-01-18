@@ -3,6 +3,16 @@ resource "aws_s3_bucket" "sparticle-engine-prod-audio" {
   acl    = "public-read"
 }
 
+resource "aws_s3_bucket" "sparticle-pwa-prod" {
+  bucket = "sparticle-pwa-prod"
+  acl    = "public-read"
+
+  website {
+    index_document = "index.html"
+    error_document = "index.html"
+  }
+}
+
 resource "aws_dynamodb_table" "sparticle-articles" {
   name = "articles"
   hash_key = "sessionId"
