@@ -36,6 +36,11 @@ class MediaStore {
   @action onTimeUpdate (id, duration) {
     localStorage.setItem(`${id}-duration`, duration);
   }
+
+  @action reset () {
+    this.currentlyPlayingId = null;
+    this.currentlyPlaying = null;
+  }
 }
 
 export default new MediaStore()

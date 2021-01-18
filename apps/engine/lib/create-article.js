@@ -78,20 +78,13 @@ module.exports = async (event) => {
     encodedArticle = await getArticleByEncodedUrl(encodedUrl);
   } catch (e) {}
 
-  if (encodedArticle) {
+  if (encodedArticle && encodedArticle.pollyTaskStatus === 'COMPLETED' && encodedArticle.s3ObjectAccessible === true) {
     // create article
 
     let article;
 
     try {
-      article = await createArticle(id, sessionId, encodedArticle.siteName, encodedArticle.title, encodedUrl, encodedArticle.decodedUrl, {
-        SynthesisTask: {
-          TaskId: encodedArticle.pollyTaskId,
-          RequestCharacters: encodedArticle.pollyCharacterLength,
-          OutputUri: encodedArticle.s3ObjectUrl,
-          OutputFormat: encodedArticle.s3ObjectContentType
-        }
-      }, 'COMPLETED', true);
+      article = await createArticle(id, sessionId, encodedArticle);
     } catch (e) {
       throw e;
     }
@@ -161,7 +154,18 @@ module.exports = async (event) => {
   let article;
 
   try {
-    article = await createArticle(id, sessionId, siteName, title, encodedUrl, decodedUrl, task);
+    article = await createArticle(id, sessionId, {
+      siteName,
+      title,
+      encodedUrl,
+      decodedUrl,
+      pollyTaskId: task.SynthesisTask.TaskId,
+      pollyCharacterLength: task.SynthesisTask.RequestCharacters,
+      pollyTaskStatus: task.SynthesisTask.TaskStatus,
+      s3ObjectUrl: task.SynthesisTask.OutputUri,
+      s3ObjectContentType: task.SynthesisTask.OutputFormat,
+      s3ObjectAccessible: false
+    });
   } catch (e) {
     throw e;
   }

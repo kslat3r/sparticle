@@ -9,6 +9,7 @@ import withAuthorisation from '../helpers/withAuthorisation';
 
 @inject('articlesStore')
 @inject('authorisationStore')
+@inject('mediaStore')
 @inject('routingStore')
 @observer
 class Articles extends React.Component {
@@ -20,6 +21,10 @@ class Articles extends React.Component {
 
   componentDidMount () {
     this.props.articlesStore.fetch(this.props.authorisationStore.token);
+  }
+
+  componentWillUnmount () {
+    this.props.mediaStore.reset();
   }
 
   onRightClick (e) {
