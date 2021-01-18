@@ -1,0 +1,82 @@
+version: 2.1
+
+parameters:
+  trigger:
+    type: boolean
+    default: true
+  engine:
+    type: boolean
+    default: false
+  pwa:
+    type: boolean
+    default: false
+
+executors:
+  node:
+    docker:
+      - image: cimg/node:15.6.0
+
+jobs:
+  trigger-workflows:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - checkout
+      - run:
+          name: Set token
+          command: |
+            echo "export CIRCLE_USER_TOKEN=${CIRCLE_TOKEN}" >> $BASH_ENV
+      - run:
+          name: Trigger workflows
+          command: chmod +x .circleci/monorepo.sh && .circleci/monorepo.sh
+
+  serverless-deploy:
+    executor: node
+    steps:
+      - checkout
+      - run:
+          name: Install Serverless
+          command: |
+            npm i -g serverless
+            npm install
+      - run:
+          name: Deploy
+          command: |
+            serverless deploy
+
+  pwa-build:
+    executor: node
+    steps:
+      - checkout
+  
+  pwa-deploy:
+    executor: node
+    steps:
+      - checkout
+
+workflows:
+  version: 2
+
+  ci:
+    when: << pipeline.parameters.trigger >>
+    jobs:
+      - trigger-workflows:
+          filters:
+              branches:
+                only: master
+
+  node:
+    when: << pipeline.parameters.node >>
+    jobs:
+      - deploy:
+          name: serverless-deploy
+  
+  pwa:
+    when: << pipeline.parameters.pwa >>
+    jobs:
+      - build:
+          name: pwa-build
+      - deploy:
+          name: pwa-deploy
+          requires:
+            - pwa-build

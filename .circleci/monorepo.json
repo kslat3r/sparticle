@@ -1,0 +1,7 @@
+{
+    "pages": 1,
+    "packages": {
+      "engine": ["apps/engine/"],
+      "paw": ["apps/pwa/"]
+    }
+  }
