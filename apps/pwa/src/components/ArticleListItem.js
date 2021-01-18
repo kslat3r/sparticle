@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
+import { Media } from 'react-media-player';
 import { withStyles } from '@material-ui/core/styles';
 import Collapse from '@material-ui/core/Collapse';
 import Grid from '@material-ui/core/Grid';
@@ -8,30 +9,18 @@ import ListItem from '@material-ui/core/ListItem';
 import Link from '@material-ui/core/Link';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import { Media } from 'react-media-player';
 import ArticlePlayer from './ArticlePlayer';
 
 const styles = theme => ({
   root: {
 
   },
-  text: {
-    marginLeft: theme.spacing(1)
-  },
-  button: {
-    marginRight: theme.spacing(0)
-  },
-  inline: {
-    display: 'inline',
-  },
-  deleted: {
-    backgroundColor: 'red'
-  },
   listItem: {
-    paddingLeft: theme.spacing(1)
+
   },
   secondary: {
-    right: 8
+    marginRight: 0,
+    right: 0
   }
 });
 
@@ -56,14 +45,13 @@ class ArticleListItem extends React.Component {
         <ListItem
           className={classes.listItem}
           divider
-          disableGutters
         >
           <Grid
             container
           >
             <Grid
               item
-              xs={7}
+              xs={8}
             >
               <Link
                 href={item.decodedUrl}
@@ -78,7 +66,7 @@ class ArticleListItem extends React.Component {
             </Grid>
             <Grid
               item
-              xs={5}
+              xs={4}
             >
               <ListItemSecondaryAction
                 className={classes.secondary}

@@ -4,31 +4,25 @@ import { inject } from 'mobx-react';
 import { withStyles } from '@material-ui/core/styles';
 import { Player, withMediaProps } from 'react-media-player';
 import IconButton from '@material-ui/core/IconButton';
-import DeleteIcon from '@material-ui/icons/Delete';
-import RestoreIcon from '@material-ui/icons/Restore';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import PauseIcon from '@material-ui/icons/Pause';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 
 const styles = theme => ({
   button: {
-    zIndex: 2,
-    marginLeft: theme.spacing(0)
-  },
-  buttonMargin: {
-    zIndex: 2,
-    marginRight: 12
+    zIndex: 2
   },
   progressContainer: {
-    width: 48,
-    textAlign: 'center',
-    marginTop: -48,
     position: 'absolute',
-    right: 0
+    width: 48,
+    marginTop: -48
   },
   progressBackground: {
-    color: theme.palette.grey[200],
     position: 'relative',
+    color: theme.palette.grey[200]
   },
   progress: {
     position: 'relative',
@@ -47,12 +41,18 @@ class ArticlePlayer extends React.Component {
     super(props);
 
     this.onReady = this.onReady.bind(this);
+    this.onMenuClick = this.onMenuClick.bind(this);
+    this.onMenuClose = this.onMenuClose.bind(this);
     this.onDelete = this.onDelete.bind(this);
     this.onReset = this.onReset.bind(this);
     this.onClick = this.onClick.bind(this);
     this.onTimeUpdate = this.onTimeUpdate.bind(this);
 
-    this.state = { ready: false };
+    this.state = {
+      ready: false,
+      menuOpen: false,
+      menuAnchorEl: null
+    };
   }
 
   onReady () {
@@ -70,6 +70,22 @@ class ArticlePlayer extends React.Component {
     }
   }
 
+  onMenuClick (e) {
+    e.preventDefault();
+
+    this.setState({
+      menuOpen: true,
+      menuAnchorEl: e.currentTarget
+    });
+  }
+
+  onMenuClose () {
+    this.setState({
+      menuOpen: false,
+      menuAnchorEl: null
+    });
+  }
+
   onDelete () {
     const {
       articlesStore,
@@ -84,6 +100,8 @@ class ArticlePlayer extends React.Component {
 
     media.pause();
     articlesStore.delete(token, id);
+
+    this.onMenuClose();
   }
 
   onReset () {
@@ -95,6 +113,8 @@ class ArticlePlayer extends React.Component {
     } = this.props;
 
     this.props.mediaStore.onReset(id, media);
+
+    this.onMenuClose();
   }
 
   onClick () {
@@ -133,7 +153,9 @@ class ArticlePlayer extends React.Component {
     let playedDuration = 0;
 
     const {
-      ready
+      ready,
+      menuOpen,
+      menuAnchorEl
     } = this.state;
 
     if (ready) {
@@ -147,21 +169,6 @@ class ArticlePlayer extends React.Component {
 
     return (
       <React.Fragment>
-        <IconButton
-          className={classes.button}
-          onClick={this.onDelete}
-        >
-          <DeleteIcon />
-        </IconButton>
-
-        <IconButton
-          className={classes.buttonMargin}
-          onClick={this.onReset}
-          disabled={item.pollyTaskStatus === 'COMPLETED' && item.s3ObjectAccessible ? false:  true}
-        >
-          <RestoreIcon />
-        </IconButton>
-
         <IconButton
           className={classes.button}
           onClick={this.onClick}
@@ -194,6 +201,33 @@ class ArticlePlayer extends React.Component {
             value={item.pollyTaskStatus === 'FAILED' ? 100 : playedDuration}
           />
         </div>
+
+        <IconButton
+          disableFocusRipple
+          disableRipple
+          onClick={this.onMenuClick}
+        >
+          <MoreVertIcon />
+        </IconButton>
+
+        <Menu
+          anchorEl={menuAnchorEl}
+          keepMounted
+          open={menuOpen}
+          onClose={this.onMenuClose}
+        >
+          <MenuItem
+            onClick={this.onReset}
+          >
+            Reset
+          </MenuItem>
+
+          <MenuItem
+            onClick={this.onDelete}
+          >
+            Delete
+          </MenuItem>
+        </Menu>
 
         {item.pollyTaskStatus === 'COMPLETED' && item.s3ObjectAccessible ? (
           <Player
