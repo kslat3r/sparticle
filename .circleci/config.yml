@@ -52,7 +52,6 @@ jobs:
     executor: node
     steps:
       - checkout
-      - aws-cli/setup
       - run:
           name: Deploy
           command: |
@@ -60,7 +59,7 @@ jobs:
             npm install
             npm run build
       - aws-s3/sync:
-          from: build
+          from: apps/pwa/build
           to: 's3://sparticle-pwa-prod/'
           arguments: |
             --acl public-read \
