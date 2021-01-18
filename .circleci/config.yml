@@ -53,7 +53,7 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Deploy
+          name: Build
           command: |
             cd apps/pwa
             npm install
