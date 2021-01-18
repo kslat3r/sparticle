@@ -35,7 +35,7 @@ class Articles extends React.Component {
       items
     } = this.props.articlesStore;
 
-    const deleted = items.find(item => item.deleted);
+    const deleted = items.filter(item => item.deleted);
 
     return (
       <React.Fragment>
