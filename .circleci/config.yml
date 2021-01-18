@@ -44,6 +44,7 @@ jobs:
           name: Deploy
           command: |
             cd apps/engine
+            ls
             serverless deploy
 
   pwa-build:
