@@ -78,7 +78,7 @@ class ArticlesStore {
         this.error = e.message;
       });
 
-      return;
+      throw e;
     }
 
     runInAction(() => {
