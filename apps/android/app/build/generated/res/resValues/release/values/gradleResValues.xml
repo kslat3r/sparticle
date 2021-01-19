@@ -7,7 +7,7 @@
     <string name="appName" translatable="false">Sparticle</string>
     <string name="assetStatements" translatable="false">[{ \"relation\": [\"delegate_permission/common.handle_all_urls\"],\"target\": {\"namespace\": \"web\", \"site\": \"https://d11rgcyvp34g0v.cloudfront.net\"}}]</string>
 
-    <color name="backgroundColor">#F50057</color>
+    <color name="backgroundColor">#eeeeee</color>
     <color name="colorPrimary">#3F51B5</color>
 
     <bool name="enableNotification">false</bool>
