@@ -1,5 +1,5 @@
 [{
-  "relation": ["delegate_permission/common.handle_all_urls"],
-  "target" : { "namespace": "android_app", "package_name": "com.sparticle.android",
-               "sha256_cert_fingerprints": ["61:88:38:12:95:24:89:FB:D9:59:C0:06:0F:A2:7D:0A:D2:AC:71:73:E5:4F:5D:E0:72:11:B5:72:82:E6:76:6B"] }
-}]
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target" : { "namespace": "android_app", "package_name": "com.sparticle.mobile",
+                   "sha256_cert_fingerprints": ["70:B5:14:D3:B9:14:51:0E:28:08:A1:FD:D6:8E:9D:03:58:17:EA:23:2D:01:7F:20:AA:6E:DE:43:0E:9B:19:E0"] }
+    }]
