@@ -54,7 +54,7 @@ android {
         resValue "string", "appName", twaManifest.name
 
         // The URL that will be used when launching the TWA from the Android Launcher
-        def launchUrl = "https://" + twaManifest.hostName + twaManifest.launchUrl
+        def launchUrl = "http://" + twaManifest.hostName + twaManifest.launchUrl
         resValue "string", "launchUrl", launchUrl
 
         // The URL that will be opened as a Desktop PWA when the TWA is installed and
