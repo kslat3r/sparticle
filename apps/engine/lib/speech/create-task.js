@@ -6,14 +6,14 @@ const polly = new AWS.Polly({
   region: 'eu-west-2'
 });
 
-module.exports = async ssml => {
+module.exports = async (ssml, voice = 'Amy') => {
   let task;
   
   try {
     task = await polly.startSpeechSynthesisTask({
       Text: ssml,
       TextType: 'ssml',
-      VoiceId: 'Amy',
+      VoiceId: voice,
       OutputFormat: 'mp3',
       SampleRate: '16000',
       OutputS3BucketName: 'sparticle-engine-prod-audio',

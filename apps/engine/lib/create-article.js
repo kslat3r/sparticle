@@ -58,6 +58,12 @@ module.exports = async (event) => {
     throw new RequestException('Mandatory request body property \'encodedUrl\' should be encoded as a base64 string');
   }
 
+  const voice = body.voice;
+
+  if (['Amy', 'Emma', 'Brian'].includes(body.voice) === false) {
+    throw new RequestException('Mandatory request body property \'boice\' is missing');
+  }
+
   // attempt to retrieve existing article from id for idempotency check
 
   let existingArticle;
@@ -78,7 +84,7 @@ module.exports = async (event) => {
     encodedArticle = await getArticleByEncodedUrl(encodedUrl);
   } catch (e) {}
 
-  if (encodedArticle && encodedArticle.pollyTaskStatus === 'COMPLETED' && encodedArticle.s3ObjectAccessible === true) {
+  if (encodedArticle && encodedArticle.pollyTaskStatus === 'COMPLETED' && encodedArticle.s3ObjectAccessible === true && encodedArticle.voice === voice) {
     // create article
 
     let article;
@@ -144,7 +150,7 @@ module.exports = async (event) => {
   let task;
 
   try {
-    task = await createTask(ssml);
+    task = await createTask(ssml, voice);
   } catch (e) {
     throw e;
   }
@@ -164,7 +170,8 @@ module.exports = async (event) => {
       pollyTaskStatus: task.SynthesisTask.TaskStatus.toUpperCase(),
       s3ObjectUrl: task.SynthesisTask.OutputUri,
       s3ObjectContentType: task.SynthesisTask.OutputFormat,
-      s3ObjectAccessible: false
+      s3ObjectAccessible: false,
+      voice
     });
   } catch (e) {
     throw e;
