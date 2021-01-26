@@ -32,6 +32,7 @@ class CreateArticleForm extends React.Component {
   constructor (props) {
     super(props);
 
+    this.onUrlSelection = this.onUrlSelection.bind(this);
     this.onVoiceMenuClick = this.onVoiceMenuClick.bind(this);
     this.onVoiceMenuClose = this.onVoiceMenuClose.bind(this);
     this.onVoiceSelection = this.onVoiceSelection.bind(this);
@@ -39,8 +40,30 @@ class CreateArticleForm extends React.Component {
     this.state = {
       menuOpen: false,
       menuAnchorEl: null,
+      url: '',
       voice: 'Amy'
     };
+  }
+
+  onUrlSelection (e) {
+    const url = e.target.value;
+
+    this.setState({
+      menuOpen: false,
+      menuAnchorEl: null,
+      url
+    });
+
+    const {
+      index,
+      onChange
+    } = this.props;
+
+    const {
+      voice
+    } = this.state
+
+    onChange(index, { url, voice });
   }
 
   onVoiceMenuClick (e) {
@@ -65,18 +88,28 @@ class CreateArticleForm extends React.Component {
       menuAnchorEl: null,
       voice
     });
+
+    const {
+      index,
+      onChange
+    } = this.props;
+
+    const {
+      url
+    } = this.state
+
+    onChange(index, { url, voice });
   }
 
   render () {
     const {
-      classes,
-      index,
-      onBlur
+      classes
     } = this.props;
 
     const {
       menuOpen,
       menuAnchorEl,
+      url,
       voice
     } = this.state;
 
@@ -96,7 +129,8 @@ class CreateArticleForm extends React.Component {
             InputLabelProps={{
               shrink: true,
             }}
-            onBlur={(e) => onBlur(index, e.target.value, voice)}
+            onChange={this.onUrlSelection}
+            value={url}
           />
           <IconButton
             color="secondary"
@@ -147,7 +181,7 @@ class CreateArticleForm extends React.Component {
 
 CreateArticleForm.propTypes = {
   index: PropTypes.number.isRequired,
-  onBlur: PropTypes.func.isRequired,
+  onChange: PropTypes.func.isRequired,
   classes: PropTypes.object.isRequired
 };
 

@@ -30,7 +30,7 @@ class CreateArticles extends React.Component {
     super(props);
 
     this.onBackClick = this.onBackClick.bind(this);
-    this.onArticleCreationFormBlur = this.onArticleCreationFormBlur.bind(this);
+    this.onArticleCreationFormChange = this.onArticleCreationFormChange.bind(this);
     this.onNewArticleFormButtonClick = this.onNewArticleFormButtonClick.bind(this);
     this.onSubmitClick = this.onSubmitClick.bind(this);
 
@@ -46,13 +46,10 @@ class CreateArticles extends React.Component {
     this.props.routingStore.push('/articles');
   }
 
-  onArticleCreationFormBlur (key, url, voice) {
+  onArticleCreationFormChange (key, formData) {
     const data = this.state.data;
 
-    data[key] = {
-      url,
-      voice
-    };
+    data[key] = formData;
 
     this.setState({
       data
@@ -99,7 +96,7 @@ class CreateArticles extends React.Component {
         <CreateArticleForm
           key={i}
           index={i}
-          onBlur={this.onArticleCreationFormBlur}
+          onChange={this.onArticleCreationFormChange}
         />
       ))
     }
