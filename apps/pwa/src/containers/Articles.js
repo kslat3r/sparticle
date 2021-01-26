@@ -9,7 +9,7 @@ import withAuthorisation from '../helpers/withAuthorisation';
 
 @inject('articlesStore')
 @inject('authorisationStore')
-@inject('mediaStore')
+@inject('playerStore')
 @inject('routingStore')
 @observer
 class Articles extends React.Component {
@@ -24,7 +24,7 @@ class Articles extends React.Component {
   }
 
   componentWillUnmount () {
-    this.props.mediaStore.reset();
+    this.props.playerStore.reset();
   }
 
   onRightClick (e) {
@@ -43,7 +43,7 @@ class Articles extends React.Component {
     return (
       <React.Fragment>
         <Toolbar
-          rightText="Add new article"
+          rightText="Add articles"
           onRightClick={this.onRightClick}
         />
 

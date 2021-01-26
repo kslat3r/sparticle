@@ -12,7 +12,12 @@ import withAuthorisation from '../helpers/withAuthorisation';
 const styles = theme => ({
   button: {
     marginRight: theme.spacing(2),
-    float: 'right'
+    float: 'right',
+    position: 'relative',
+    display: 'block'
+  },
+  buttons: {
+
   }
 });
 
@@ -115,7 +120,9 @@ class CreateArticles extends React.Component {
         <React.Fragment>
           {forms}
 
-          <div>
+          <div
+            className={classes.buttons}
+          >
             <Button
               className={classes.button}
               variant="contained"

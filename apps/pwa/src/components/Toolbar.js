@@ -56,6 +56,13 @@ class ComponentWithToolbar extends React.Component {
             Sparticle
           </Typography>
 
+          <Button
+            color="inherit"
+            data-az-l="edf0bd0c-b36f-4822-b579-43e29f372f9f"
+          >
+            Give feedback
+          </Button>
+
           {rightText && onRightClick ? (
             <Button
               color="inherit"

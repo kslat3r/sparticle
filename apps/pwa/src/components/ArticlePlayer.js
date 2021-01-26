@@ -40,7 +40,7 @@ const styles = theme => ({
 
 @inject('articlesStore')
 @inject('authorisationStore')
-@inject('mediaStore')
+@inject('playerStore')
 class ArticlePlayer extends React.Component {
   constructor (props) {
     super(props);
@@ -66,12 +66,13 @@ class ArticlePlayer extends React.Component {
 
       const {
         item: {
-          id
+          id,
+          created
         },
         media
       } = this.props;
 
-      this.props.mediaStore.onReady(id, media);
+      this.props.playerStore.onReady(id, media, created );
     }
   }
 
@@ -117,7 +118,7 @@ class ArticlePlayer extends React.Component {
       media
     } = this.props;
 
-    this.props.mediaStore.onReset(id, media);
+    this.props.playerStore.onReset(id, media);
 
     this.onMenuClose();
   }
@@ -128,10 +129,10 @@ class ArticlePlayer extends React.Component {
         id
       },
       media,
-      mediaStore
+      playerStore
     } = this.props;
 
-    mediaStore.onClick(id, media);
+    playerStore.onClick(id, media);
   }
 
   onTimeUpdate () {
@@ -140,12 +141,13 @@ class ArticlePlayer extends React.Component {
         id
       },
       media: {
-        currentTime
+        currentTime,
+        duration
       },
-      mediaStore
+      playerStore
     } = this.props;
 
-    mediaStore.onTimeUpdate(id, currentTime);
+    playerStore.onTimeUpdate(id, currentTime, duration);
   }
 
   render () {

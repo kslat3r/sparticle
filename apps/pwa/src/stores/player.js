@@ -1,19 +1,27 @@
 import { makeObservable, action } from 'mobx';
 
-class MediaStore {
+class PlayerStore {
   currentlyPlayingId = null;
   currentlyPlaying = null;
+  medias = [];
 
   constructor () {
     makeObservable(this);
   }
 
-  @action onReady (id, media) {
+  @action onReady (id, media, created) {
     const duration = localStorage.getItem(`${id}-duration`);
 
     if (duration) {
       media.seekTo(duration);
     }
+
+    this.addMedia({ id, media, created });
+  }
+
+  addMedia (toAdd) {
+    this.medias.push(toAdd);
+    this.medias = this.medias.sort((a, b) => b.created - a.created);
   }
 
   @action onReset (id, media) {
@@ -33,8 +41,18 @@ class MediaStore {
     this.currentlyPlaying = media;
   }
 
-  @action onTimeUpdate (id, duration) {
-    localStorage.setItem(`${id}-duration`, duration);
+  @action onTimeUpdate (id, currentTime, totalTime) {
+    localStorage.setItem(`${id}-duration`, currentTime);
+
+    if (currentTime === totalTime) {
+      const index = this.medias.findIndex(obj => obj.id === id);
+      const next = this.medias[index + 1];
+
+      if (next) {
+        this.reset();
+        this.onClick(next.id, next.media);
+      }
+    }
   }
 
   @action reset () {
@@ -43,4 +61,4 @@ class MediaStore {
   }
 }
 
-export default new MediaStore()
+export default new PlayerStore()
