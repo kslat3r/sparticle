@@ -36,7 +36,7 @@ class CreateArticles extends React.Component {
 
     this.state = {
       count: 1,
-      urls: []
+      data: []
     };
   }
 
@@ -46,13 +46,16 @@ class CreateArticles extends React.Component {
     this.props.routingStore.push('/articles');
   }
 
-  onArticleCreationFormBlur (key, value) {
-    const urls = this.state.urls;
+  onArticleCreationFormBlur (key, url, voice) {
+    const data = this.state.data;
 
-    urls[key] = value;
+    data[key] = {
+      url,
+      voice
+    };
 
     this.setState({
-      urls
+      data
     });
   }
 
@@ -67,9 +70,9 @@ class CreateArticles extends React.Component {
   async onSubmitClick (e) {
     e.preventDefault();
 
-    if (this.state.urls.length) {
+    if (this.state.data.length) {
       try {
-        await this.props.articlesStore.create(this.props.authorisationStore.token, this.state.urls);
+        await this.props.articlesStore.create(this.props.authorisationStore.token, this.state.data);
 
         this.props.routingStore.push('/articles');
       } catch (e) {}

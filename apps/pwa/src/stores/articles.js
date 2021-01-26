@@ -54,14 +54,14 @@ class ArticlesStore {
     });
   }
 
-  @action async create(token, urls) {
+  @action async create (token, data) {
     runInAction(() => {
       this.requesting = true;
       this.error = false;
     });
 
     try {
-      await Promise.all(urls.map(url => makeRequest(`${process.env.REACT_APP_API_HOST}/articles`, {
+      await Promise.all(data.map(d => makeRequest(`${process.env.REACT_APP_API_HOST}/articles`, {
         method: 'POST',
         headers: {
           Authorization: token,
@@ -69,7 +69,8 @@ class ArticlesStore {
         },
         body: JSON.stringify({
           id: uuid(),
-          encodedUrl: btoa(url)
+          encodedUrl: btoa(d.url),
+          voice: d.voice
         })
       })));
     } catch (e) {
