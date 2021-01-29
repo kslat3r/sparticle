@@ -4,18 +4,16 @@ import { createBrowserHistory } from 'history';
 import { syncHistoryWithStore } from 'mobx-react-router';
 import { Provider } from 'mobx-react';
 import { Router, Switch, Route, Redirect } from 'react-router';
-import articlesStore from './stores/articles';
+import articleStore from './stores/article';
 import authorisationStore from './stores/authorisation';
-import playerStore from './stores/player';
 import routingStore from './stores/routing';
-import Articles from './containers/Articles';
-import CreateArticles from './containers/CreateArticles';
+import Articles from './components/Articles';
+import CreateArticles from './components/CreateArticles';
 import './index.css';
 
 const stores = {
-  articlesStore,
+  articleStore,
   authorisationStore,
-  playerStore,
   routingStore
 };
 
@@ -34,15 +32,34 @@ ReactDOM.render((
           <CreateArticles />
         </Route>
         <Route
-          path="/articles"
+          path="/articles/recent"
         >
-          <Articles />
+          <Articles
+            type="recent"
+            showDeleted={false}
+          />
+        </Route>
+        <Route
+          path="/articles/favourites"
+        >
+          <Articles
+            type="favourites"
+            showDeleted={false}
+          />
+        </Route>
+        <Route
+          path="/articles/archived"
+        >
+          <Articles
+            type="archived"
+            showDeleted={true}
+          />
         </Route>
         <Route
           path="/"
         >
           <Redirect
-            to="/articles"
+            to="/articles/recent"
           />
         </Route>
       </Switch>

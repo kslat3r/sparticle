@@ -1,7 +1,7 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import LoadingDialog from '../components/LoadingDialog';
-import ErrorDialog from '../components/ErrorDialog';
+import LoadingDialog from '../components/Dialog/Loading';
+import ErrorDialog from '../components/Dialog/Error';
 
 const withAuthorization = OriginalComponent => {
   @inject('authorisationStore')
@@ -13,10 +13,13 @@ const withAuthorization = OriginalComponent => {
 
     render () {
       const {
-        requesting,
-        error,
-        token
-      } = this.props.authorisationStore;
+        authorisationStore: {
+          requesting,
+          error,
+          token
+        },
+        ...childProps
+      } = this.props
 
       return (
         <React.Fragment>
@@ -31,7 +34,9 @@ const withAuthorization = OriginalComponent => {
           ) : null}
 
           {!requesting && !error && token ? (
-            <OriginalComponent />
+            <OriginalComponent
+              {...childProps}
+            />
           ) : null}
         </React.Fragment>
       )

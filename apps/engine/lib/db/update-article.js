@@ -3,7 +3,7 @@ const InternalException = require('../exception/Internal');
 
 const dynamoDb = new AWS.DynamoDB();
 
-module.exports = async article => {
+module.exports = async (article, data) => {
   try {
     await dynamoDb.updateItem({
       TableName: 'articles',
@@ -16,13 +16,13 @@ module.exports = async article => {
         }
       },
       ConditionExpression: 'id = :id',
-      UpdateExpression: 'set deleted = :deleted',
+      UpdateExpression: 'set favourite = :favourite',
       ExpressionAttributeValues: {
         ':id': {
           S: article.id,
         },
-        ':deleted': {
-          BOOL: true
+        ':favourite': {
+          BOOL: data.favourite
         }
       },
     }).promise();
@@ -30,5 +30,5 @@ module.exports = async article => {
     throw new InternalException(e.message);
   }
 
-  return;
+  return Object.assign({}, article, data);
 };

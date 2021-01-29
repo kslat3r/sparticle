@@ -10,13 +10,16 @@ module.exports = async sessionId => {
     response = await dynamoDb.query({
       TableName: 'articles',
       KeyConditionExpression: 'sessionId = :sessionId',
-      FilterExpression : 'deleted = :deleted',
+      FilterExpression : 'deleted = :deleted and favourite = :favourite',
       ExpressionAttributeValues: {
         ':sessionId': {
           'S': sessionId
         },
         ':deleted': {
           BOOL: false
+        },
+        ':favourite': {
+          BOOL: true
         }
       },
       ScanIndexForward: false

@@ -9,6 +9,7 @@ module.exports = async (id, sessionId, params) => {
     created: new Date().getTime(),
     sessionId,
     deleted: false,
+    favourite: false
   });
 
   try {

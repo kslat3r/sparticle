@@ -87,6 +87,22 @@ functions:
       - httpApi:
           path: /articles
           method: get
+  getFavouriteArticles:
+    handler: handler.getFavouriteArticles
+    environment: 
+      JWT_SECRET_KEY: ${ssm:/jwt-secret-key~true}
+    events:
+      - httpApi:
+          path: /articles/favourites
+          method: get
+  getArchivedArticles:
+    handler: handler.getArchivedArticles
+    environment: 
+      JWT_SECRET_KEY: ${ssm:/jwt-secret-key~true}
+    events:
+      - httpApi:
+          path: /articles/archived
+          method: get
   getArticle:
     handler: handler.getArticle
     environment: 
@@ -95,6 +111,14 @@ functions:
       - httpApi:
           path: /articles/{id}
           method: get
+  updateArticle:
+    handler: handler.updateArticle
+    environment: 
+      JWT_SECRET_KEY: ${ssm:/jwt-secret-key~true}
+    events:
+      - httpApi:
+          path: /articles/{id}
+          method: patch
   deleteArticle:
     handler: handler.deleteArticle
     environment: 

@@ -16,7 +16,7 @@ module.exports = async sessionId => {
           'S': sessionId
         },
         ':deleted': {
-          BOOL: false
+          BOOL: true
         }
       },
       ScanIndexForward: false

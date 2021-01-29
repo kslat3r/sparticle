@@ -10,7 +10,8 @@ const styles = theme => ({
     paddingTop: theme.spacing(2),
     paddingBottom: theme.spacing(2),
     margin: theme.spacing(2),
-    backgroundColor: '#ff7961'
+    backgroundColor: theme.palette.secondary.main,
+    color: '#fff'
   }
 });
 

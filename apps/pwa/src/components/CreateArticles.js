@@ -2,12 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { inject, observer } from 'mobx-react';
-import Toolbar from '../components/Toolbar';
-import LoadingDialog from '../components/LoadingDialog';
-import ErrorDialog from '../components/ErrorDialog';
-import CreateArticleForm from '../components/CreateArticleForm';
 import Button from '@material-ui/core/Button';
 import withAuthorisation from '../helpers/withAuthorisation';
+import Toolbar from './Toolbar';
+import LoadingDialog from './Dialog/Loading';
+import ErrorDialog from './Dialog/Error';
+import CreateArticleForm from './Form/CreateArticle';
 
 const styles = theme => ({
   button: {
@@ -21,7 +21,7 @@ const styles = theme => ({
   }
 });
 
-@inject('articlesStore')
+@inject('articleStore')
 @inject('authorisationStore')
 @inject('routingStore')
 @observer
@@ -43,7 +43,11 @@ class CreateArticles extends React.Component {
   onBackClick (e) {
     e.preventDefault();
 
-    this.props.routingStore.push('/articles');
+    const {
+      routingStore
+    } = this.props;
+
+    routingStore.push('/articles');
   }
 
   onArticleCreationFormChange (key, formData) {
@@ -68,10 +72,21 @@ class CreateArticles extends React.Component {
     e.preventDefault();
 
     if (this.state.data.length) {
-      try {
-        await this.props.articlesStore.create(this.props.authorisationStore.token, this.state.data);
+      const {
+        data
+      } = this.state;
 
-        this.props.routingStore.push('/articles');
+      const {
+        articleStore,
+        authorisationStore: {
+          token
+        },
+        routingStore
+      } = this.props
+
+      try {
+        await articleStore.create(data, token);
+        routingStore.push('/articles');
       } catch (e) {}
     }
   }
@@ -79,7 +94,7 @@ class CreateArticles extends React.Component {
   render () {
     const {
       classes,
-      articlesStore: {
+      articleStore: {
         requesting,
         error
       }
