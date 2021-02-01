@@ -8,6 +8,7 @@
     "is-valid-http-url": "^1.0.3",
     "jsdom": "^16.4.0",
     "jsonwebtoken": "^8.5.1",
+    "mp3-duration": "^1.1.0",
     "uuid": "^3.3.2"
   }
 }

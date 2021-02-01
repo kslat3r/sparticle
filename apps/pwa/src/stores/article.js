@@ -7,6 +7,11 @@ class ArticleStore {
   @observable requesting = false;
   @observable error = false;
 
+  @observable isPlayerShown = false;
+
+  @observable selected = null;
+  @observable isPlaying = false;
+
   refreshTimeout = 5000;
   intervals = {};
 
@@ -44,6 +49,10 @@ class ArticleStore {
       return;
     }
 
+    // get durations
+
+    this.recall(items);
+
     // poll updated to scheduled polly tasks
 
     this.poll(items.filter(item =>
@@ -58,6 +67,18 @@ class ArticleStore {
       this.requesting = false;
       this.error = false;
     });
+  }
+
+  recall (items) {
+    items.forEach(item => {
+      item.currentTime = 0;
+
+      const currentTime = parseFloat(localStorage.getItem(`${item.id}-currentTime`));
+
+      if (currentTime) {
+        item.currentTime = currentTime;
+      }
+    })
   }
 
   poll (items, token) {
@@ -90,6 +111,7 @@ class ArticleStore {
           // update article in list
 
           runInAction(() => {
+            this.reset(article);
             this.items.splice(this.items.findIndex(item => item.id === article.id), 1, article);
           });
         }
@@ -99,12 +121,32 @@ class ArticleStore {
     })
   };
 
-  @action async play (item) {
+  @action playPause (item) {
+    runInAction(() => {
+      this.isPlayerShown = true;
 
+      if (this.selected && this.selected.id === item.id) {
+        this.isPlaying = !this.isPlaying;
+      } else {
+        this.isPlaying = true;
+      }
+
+      this.selected = item;
+    });
   }
 
-  @action async reset (item) {
+  @action playing (item, currentTime) {
+    runInAction(() => {
+      item.currentTime = currentTime;
+      localStorage.setItem(`${item.id}-currentTime`, currentTime);
+    });
+  }
 
+  @action stop (item) {
+    runInAction(() => {
+      this.playing(item, 0);
+      this.isPlaying = false;
+    })
   }
 
   @action async favourite (item, token, isFavourite) {

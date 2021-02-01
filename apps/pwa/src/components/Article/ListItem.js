@@ -8,8 +8,8 @@ import StarIcon from '@material-ui/icons/Star';
 import Link from '@material-ui/core/Link';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import ArticleListItemPlayer from './ListItemPlayer';
-import ArticleListItemMenu from './ListItemMenu';
+import ArticlePlayPause from './PlayPause';
+import ArticleMenu from './Menu';
 
 const styles = theme => ({
   favourite: {
@@ -21,6 +21,10 @@ const styles = theme => ({
   secondary: {
     marginRight: 0,
     right: 0
+  },
+  time: {
+    marginLeft: 5,
+    fontSize: '80%'
   }
 });
 
@@ -38,6 +42,16 @@ class ArticleListItem extends React.Component {
     const date = new Date(created);
     const timeString = date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
     const dateString = date.toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' });
+
+    let duration;
+    let minutes;
+    let seconds;
+
+    if (item.s3ObjectDuration) {
+      duration = item.s3ObjectDuration;
+      minutes = Math.floor(duration / 60);
+      seconds = Math.ceil(duration - minutes * 60);
+    }
 
     return showDeleted || !item.deleted ? (
       <ListItem
@@ -66,7 +80,17 @@ class ArticleListItem extends React.Component {
                       />
                     ) : null}
 
-                    <span>{item.title}</span>
+                    <span>
+                      {item.title}
+                    </span>
+
+                    {duration ? (
+                      <span
+                        className={classes.time}
+                      >
+                        ({minutes}m {seconds}s)
+                      </span>
+                    ) : null}
                   </React.Fragment>
                 }
                 secondary={`Added ${timeString} ${dateString}`}
@@ -80,11 +104,11 @@ class ArticleListItem extends React.Component {
             <ListItemSecondaryAction
               className={classes.secondary}
             >
-              <ArticleListItemPlayer
+              <ArticlePlayPause
                 item={item}
               />
 
-              <ArticleListItemMenu
+              <ArticleMenu
                 item={item}
               />
             </ListItemSecondaryAction>

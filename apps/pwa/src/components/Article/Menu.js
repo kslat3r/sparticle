@@ -23,7 +23,6 @@ class ArticleListItemMenu extends React.Component {
 
     this.onMenuClick = this.onMenuClick.bind(this);
     this.onMenuClose = this.onMenuClose.bind(this);
-    this.onReset = this.onReset.bind(this);
     this.onFavourite = this.onFavourite.bind(this);
     this.onDelete = this.onDelete.bind(this);
 
@@ -47,16 +46,6 @@ class ArticleListItemMenu extends React.Component {
       menuOpen: false,
       menuAnchorEl: null
     });
-  }
-
-  onReset () {
-    const {
-      articleStore,
-      item
-    } = this.props;
-
-    articleStore.reset(item);
-    this.onMenuClose();
   }
 
   onFavourite (isFavourite) {
@@ -113,12 +102,6 @@ class ArticleListItemMenu extends React.Component {
           open={menuOpen}
           onClose={this.onMenuClose}
         >
-          <MenuItem
-            onClick={this.onReset}
-          >
-            Reset
-          </MenuItem>
-
           {!item.deleted && !item.favourite ? (
             <MenuItem
               onClick={() => this.onFavourite(true)}

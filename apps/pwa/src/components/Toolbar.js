@@ -1,12 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
+import { inject, observer } from 'mobx-react';
 import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
+import { Toolbar as MUToolbar } from '@material-ui/core';
 import IconButton from '@material-ui/core/IconButton';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
+import Paper from '@material-ui/core/Paper';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
 
 const styles = (theme) => ({
   root: {
@@ -23,27 +27,88 @@ const styles = (theme) => ({
   }
 });
 
-class ComponentWithToolbar extends React.Component {
+@inject('articleStore')
+@inject('authorisationStore')
+@inject('routingStore')
+@observer
+class Toolbar extends React.Component {
+  constructor (props) {
+    super(props);
+
+    this.onBackClick = this.onBackClick.bind(this);
+    this.onAddArticlesClick = this.onAddArticlesClick.bind(this);
+    this.onTabClick = this.onTabClick.bind(this);
+  }
+
+  componentDidMount() {
+    const {
+      showTabs
+    } = this.props;
+
+    if (showTabs) {
+      document.body.classList.add('has-tabs');
+    } else {
+      document.body.classList.remove('has-tabs');
+    }
+  }
+
+  onBackClick (e) {
+    e.preventDefault();
+
+    const {
+      routingStore
+    } = this.props;
+
+    routingStore.goBack();
+  }
+
+  onAddArticlesClick (e) {
+    e.preventDefault();
+
+    const {
+      routingStore
+    } = this.props;
+
+    routingStore.push('/articles/create');
+  }
+
+  onTabClick (e, type) {
+    e.preventDefault();
+
+    const {
+      routingStore,
+      articleStore,
+      authorisationStore: {
+        token
+      }
+    } = this.props;
+
+    routingStore.push(`/articles/${type}`);
+    articleStore.fetch(type, token);
+  }
+
   render () {
     const {
       classes,
-      onBackClick,
-      rightText,
-      onRightClick
+      showBack,
+      showFeedback,
+      showAddArticles,
+      showTabs,
+      type
     } = this.props
 
     return (
       <AppBar
-        position="static"
+        position="fixed"
       >
-        <Toolbar
+        <MUToolbar
           className={classes.toolbar}
         >
-          {onBackClick ? (
+          {showBack ? (
             <IconButton
               edge="start"
               className={classes.backButton}
-              onClick={onBackClick}
+              onClick={this.onBackClick}
             >
               <ArrowBackIcon />
             </IconButton>
@@ -56,32 +121,66 @@ class ComponentWithToolbar extends React.Component {
             Sparticle
           </Typography>
 
-          <Button
-            color="inherit"
-            data-az-l="edf0bd0c-b36f-4822-b579-43e29f372f9f"
-          >
-            Give feedback
-          </Button>
-
-          {rightText && onRightClick ? (
+          {showFeedback ? (
             <Button
               color="inherit"
-              onClick={onRightClick}
+              data-az-l="edf0bd0c-b36f-4822-b579-43e29f372f9f"
             >
-              {rightText}
+              Give feedback
             </Button>
           ) : null}
-        </Toolbar>
+
+          {showAddArticles ? (
+            <Button
+              color="inherit"
+              onClick={this.onAddArticlesClick}
+            >
+              Add articles
+            </Button>
+          ) : null}
+        </MUToolbar>
+
+        {showTabs ? (
+          <Paper
+            square
+            className={classes.root}
+          >
+            <Tabs
+              variant="fullWidth"
+              onChange={this.onTabClick}
+              value={type}
+              indicatorColor="secondary"
+              textColor="secondary"
+            >
+              <Tab
+                label="Recent"
+                value="recent"
+              />
+
+              <Tab
+                label="Favourites"
+                value="favourites"
+              />
+
+              <Tab
+                label="Archived"
+                value="archived"
+              />
+            </Tabs>
+          </Paper>
+         ) : null}
       </AppBar>
     );
   }
 }
 
-ComponentWithToolbar.propTypes = {
+Toolbar.propTypes = {
   classes: PropTypes.object.isRequired,
-  onBackClick: PropTypes.func,
-  rightText: PropTypes.string,
-  onRightClick: PropTypes.func
+  showBack: PropTypes.bool.isRequired,
+  showFeedback: PropTypes.bool.isRequired,
+  showAddArticles: PropTypes.bool.isRequired,
+  showTabs: PropTypes.bool.isRequired,
+  type: PropTypes.string
 };
 
-export default withStyles(styles)(ComponentWithToolbar);
+export default withStyles(styles)(Toolbar);

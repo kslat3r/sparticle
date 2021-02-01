@@ -1,12 +1,9 @@
 const AWS = require('aws-sdk');
 const InternalException = require('../exception/Internal');
-const NotFoundException = require('../exception/NotFound');
 
 const dynamoDb = new AWS.DynamoDB();
 
 module.exports = async (article, status) => {
-  let response;
-
   try {
     await dynamoDb.updateItem({
       TableName: 'articles',

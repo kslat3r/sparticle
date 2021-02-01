@@ -6,7 +6,7 @@ import ArticleListItem from './ListItem';
 
 const styles = theme => ({
   root: {
-    marginBottom: 47
+
   }
 })
 

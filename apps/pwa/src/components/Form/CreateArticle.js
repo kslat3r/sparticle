@@ -6,7 +6,6 @@ import TextField from '@material-ui/core/TextField';
 import IconButton from '@material-ui/core/IconButton';
 import RecordVoiceOverIcon from '@material-ui/icons/RecordVoiceOver';
 import Menu from '@material-ui/core/Menu';
-import { Media } from 'react-media-player';
 import VoicePreview from './VoicePreview';
 
 const styles = theme => ({
@@ -146,32 +145,26 @@ class CreateArticleForm extends React.Component {
             open={menuOpen}
             onClose={this.onVoiceMenuClose}
           >
-            <Media>
-              <VoicePreview
-                selected={voice === 'Amy'}
-                url="https://s3.eu-west-2.amazonaws.com/sparticle-engine-prod-audio/6bf55160-f0a7-4ada-99d4-a98ddcf65329.mp3"
-                voice="Amy"
-                onSelection={this.onVoiceSelection}
-              />
-            </Media>
+            <VoicePreview
+              selected={voice === 'Amy'}
+              url="https://s3.eu-west-2.amazonaws.com/sparticle-engine-prod-audio/6bf55160-f0a7-4ada-99d4-a98ddcf65329.mp3"
+              voice="Amy"
+              onSelection={this.onVoiceSelection}
+            />
 
-            <Media>
-              <VoicePreview
-                selected={voice === 'Emma'}
-                url="https://s3.eu-west-2.amazonaws.com/sparticle-engine-prod-audio/9108986d-4f87-46a1-9722-77c4873426cc.mp3"
-                voice="Emma"
-                onSelection={this.onVoiceSelection}
-              />
-            </Media>
+            <VoicePreview
+              selected={voice === 'Emma'}
+              url="https://s3.eu-west-2.amazonaws.com/sparticle-engine-prod-audio/9108986d-4f87-46a1-9722-77c4873426cc.mp3"
+              voice="Emma"
+              onSelection={this.onVoiceSelection}
+            />
 
-            <Media>
-              <VoicePreview
-                selected={voice === 'Brian'}
-                url="https://s3.eu-west-2.amazonaws.com/sparticle-engine-prod-audio/d56dccdb-ab90-4f8e-aa2f-8d6a82d06d59.mp3"
-                voice="Brian"
-                onSelection={this.onVoiceSelection}
-              />
-            </Media>
+            <VoicePreview
+              selected={voice === 'Brian'}
+              url="https://s3.eu-west-2.amazonaws.com/sparticle-engine-prod-audio/d56dccdb-ab90-4f8e-aa2f-8d6a82d06d59.mp3"
+              voice="Brian"
+              onSelection={this.onVoiceSelection}
+            />
           </Menu>
         </Paper>
       </div>

@@ -3,7 +3,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import { Player, withMediaProps } from 'react-media-player';
+import ReactPlayer from 'react-player';
 import MenuItem from '@material-ui/core/MenuItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import IconButton from '@material-ui/core/IconButton';
@@ -26,63 +26,88 @@ const styles = theme => ({
   }
 });
 
-const VoicePreview = (props) => {
-  const {
-    media,
-    voice,
-    url,
-    onSelection,
-    classes,
-    selected
-  } = props;
+class VoicePreview extends React.Component {
+  constructor (props) {
+    super(props);
 
-  const onVoiceMenuClick = (e) => {
+    this.onClick = this.onClick.bind(this);
+    this.onEnded = this.onEnded.bind(this);
+
+    this.state = {
+      playing: false
+    };
+  }
+
+  onClick (e) {
     e.stopPropagation();
 
-    media.playPause();
-  };
+    this.setState({
+      playing: true
+    });
+  }
 
-  return (
-    <MenuItem
-      onClick={() => onSelection(voice)}
-      selected={selected}
-    >
-      <ListItemIcon
-        className={classes.icon}
+  onEnded () {
+    this.setState({
+      playing: false
+    });
+  }
+
+  render () {
+    const {
+      voice,
+      url,
+      onSelection,
+      classes,
+      selected
+    } = this.props;
+
+    const {
+      playing
+    } = this.state;
+
+    return (
+      <MenuItem
+        onClick={() => onSelection(voice)}
+        selected={selected}
       >
-        <IconButton
-          onClick={onVoiceMenuClick}
-          className={classes.button}
-          disableFocusRipple={true}
-          disableRipple={true}
+        <ListItemIcon
+          className={classes.icon}
         >
-          {media.isPlaying ? (
-            <PauseIcon />
-          ) : (
-            <PlayArrowIcon />
-          )}
-        </IconButton>
-      </ListItemIcon>
+          <IconButton
+            onClick={this.onClick}
+            className={classes.button}
+            disableFocusRipple={true}
+            disableRipple={true}
+          >
+            {playing ? (
+              <PauseIcon />
+            ) : (
+              <PlayArrowIcon />
+            )}
+          </IconButton>
+        </ListItemIcon>
 
-      <ListItemText
-        primary={voice}
-      />
+        <ListItemText
+          primary={voice}
+        />
 
-      <Player
-        src={url}
-        vendor="audio"
-        autoPlay={false}
-      />
-    </MenuItem>
-  );
+        <ReactPlayer
+          width={0}
+          height={0}
+          url={url}
+          playing={playing}
+          onEnded={this.onEnded}
+        />
+      </MenuItem>
+    );
+  }
 }
 
 VoicePreview.propTypes = {
   selected: PropTypes.bool.isRequired,
-  media: PropTypes.object.isRequired,
   voice: PropTypes.string.isRequired,
   url: PropTypes.string.isRequired,
   onSelection: PropTypes.func.isRequired
 };
 
-export default withMediaProps(withStyles(styles)(VoicePreview));
+export default withStyles(styles)(VoicePreview);

@@ -17,7 +17,7 @@ const styles = theme => ({
     display: 'block'
   },
   buttons: {
-
+    minHeight: 64
   }
 });
 
@@ -29,7 +29,6 @@ class CreateArticles extends React.Component {
   constructor (props) {
     super(props);
 
-    this.onBackClick = this.onBackClick.bind(this);
     this.onArticleCreationFormChange = this.onArticleCreationFormChange.bind(this);
     this.onNewArticleFormButtonClick = this.onNewArticleFormButtonClick.bind(this);
     this.onSubmitClick = this.onSubmitClick.bind(this);
@@ -38,16 +37,6 @@ class CreateArticles extends React.Component {
       count: 1,
       data: []
     };
-  }
-
-  onBackClick (e) {
-    e.preventDefault();
-
-    const {
-      routingStore
-    } = this.props;
-
-    routingStore.push('/articles');
   }
 
   onArticleCreationFormChange (key, formData) {
@@ -119,7 +108,10 @@ class CreateArticles extends React.Component {
     return (
       <React.Fragment>
         <Toolbar
-          onBackClick={this.onBackClick}
+          showBack={true}
+          showFeedback={true}
+          showAddArticles={false}
+          showTabs={false}
         />
 
         {requesting ? (

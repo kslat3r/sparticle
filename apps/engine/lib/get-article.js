@@ -33,12 +33,6 @@ module.exports = async (event) => {
     throw e;
   }
 
-  // has the article been soft deleted?
-
-  if (article.deleted) {
-    throw new NotFoundException('Not found');
-  }
-
   // does article belong to logged in user?
 
   if (sessionId !== article.sessionId) {

@@ -1,44 +1,33 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
+import { Alert, AlertTitle } from '@material-ui/lab';
 
 const styles = theme => ({
   root: {
-    ...theme.mixins.gutters(),
-    paddingTop: theme.spacing(2),
-    paddingBottom: theme.spacing(2),
-    margin: theme.spacing(2),
-    backgroundColor: theme.palette.secondary.main,
-    color: '#fff'
-  }
+    margin: theme.spacing(1)
+  },
 });
 
 const ErrorDialog = props => {
   const {
-    message,
-    classes
+    classes,
+    message
   } = props;
 
   return (
-    <div>
-      <Paper
-        className={classes.root}
-        elevation={1}
+    <div
+      className={classes.root}
+    >
+      <Alert
+        severity="error"
       >
-        <Typography
-          variant="h5"
-          component="h3"
-        >
+        <AlertTitle>
           Error
-        </Typography>
-        <Typography
-          component="p"
-        >
-          {message}
-        </Typography>
-      </Paper>
+        </AlertTitle>
+
+        {message}
+      </Alert>
     </div>
   );
 };

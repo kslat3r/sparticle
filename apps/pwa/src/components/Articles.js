@@ -2,11 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { inject, observer } from 'mobx-react';
-import BottomNavigation from '@material-ui/core/BottomNavigation';
-import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
-import RestoreIcon from '@material-ui/icons/Restore';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import ArchiveIcon from '@material-ui/icons/Archive';
 import withAuthorisation from '../helpers/withAuthorisation';
 import Toolbar from './Toolbar';
 import LoadingDialog from './Dialog/Loading';
@@ -15,13 +10,12 @@ import InfoDialog from './Dialog/Info';
 import ArticleList from './Article/List';
 
 const styles = theme => ({
-  nav: {
+  root: {
     position: 'fixed',
     bottom: 0,
     left: 0,
     right: 0,
-    zIndex: 1202,
-    borderTop: '1px solid rgba(0, 0, 0, 0.12)'
+    zIndex: 2
   }
 });
 
@@ -30,13 +24,6 @@ const styles = theme => ({
 @inject('routingStore')
 @observer
 class Articles extends React.Component {
-  constructor (props) {
-    super(props);
-
-    this.onToolbarRightClick = this.onToolbarRightClick.bind(this);
-    this.onNavChange = this.onNavChange.bind(this);
-  }
-
   componentDidMount () {
     const {
       articleStore,
@@ -49,31 +36,6 @@ class Articles extends React.Component {
     articleStore.fetch(type, token);
   }
 
-  onToolbarRightClick (e) {
-    e.preventDefault();
-
-    const {
-      routingStore
-    } = this.props;
-
-    routingStore.push('/articles/create');
-  }
-
-  onNavChange (e, type) {
-    e.preventDefault();
-
-    const {
-      routingStore,
-      articleStore,
-      authorisationStore: {
-        token
-      }
-    } = this.props;
-
-    routingStore.push(`/articles/${type}`);
-    articleStore.fetch(type, token);
-  }
-
   render () {
     const {
       articleStore: {
@@ -83,7 +45,7 @@ class Articles extends React.Component {
       },
       type,
       showDeleted,
-      classes
+      // classes
     } = this.props;
 
     let infoMsg;
@@ -103,8 +65,11 @@ class Articles extends React.Component {
     return (
       <React.Fragment>
         <Toolbar
-          rightText="Add articles"
-          onRightClick={this.onToolbarRightClick}
+          showBack={false}
+          showFeedback={true}
+          showAddArticles={true}
+          showTabs={true}
+          type={type}
         />
 
         {requesting ? (
@@ -130,29 +95,6 @@ class Articles extends React.Component {
             showDeleted={showDeleted}
           />
         ) : null}
-
-        <BottomNavigation
-          value={type}
-          onChange={this.onNavChange}
-          showLabels
-          className={classes.nav}
-        >
-          <BottomNavigationAction
-            label="Recent"
-            icon={<RestoreIcon />}
-            value="recent"
-          />
-          <BottomNavigationAction
-            label="Favorites"
-            icon={<FavoriteIcon />}
-            value="favourites"
-          />
-          <BottomNavigationAction
-            label="Archived"
-            icon={<ArchiveIcon />}
-            value="archived"
-          />
-        </BottomNavigation>
       </React.Fragment>
     )
   }

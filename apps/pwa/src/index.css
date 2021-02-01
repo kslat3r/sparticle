@@ -2,4 +2,29 @@ body {
   padding: 0;
   margin: 0;
   overflow-y: scroll;
+  overscroll-behavior: none;
+}
+
+body.has-player {
+  padding-bottom: 64px;
+}
+
+@media (min-width: 0px) {
+  body {
+    padding-top: 64px;
+  }
+
+  body.has-tabs {
+    padding-top: 106px;
+  }
+}
+
+@media (min-width: 600px) {
+  body {
+    padding-top: 72px;
+  }
+
+  body.has-tabs {
+    padding-top: 114px;
+  }
 }
