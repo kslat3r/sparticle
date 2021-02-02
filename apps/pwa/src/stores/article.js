@@ -8,9 +8,8 @@ class ArticleStore {
   @observable error = false;
 
   @observable isPlayerShown = false;
-
-  @observable selected = null;
   @observable isPlaying = false;
+  @observable selected = null;
 
   refreshTimeout = 5000;
   intervals = {};
@@ -71,12 +70,12 @@ class ArticleStore {
 
   recall (items) {
     items.forEach(item => {
-      item.currentTime = 0;
+      item.time = 0;
 
-      const currentTime = parseFloat(localStorage.getItem(`${item.id}-currentTime`));
+      const time = parseFloat(localStorage.getItem(`${item.id}-time`));
 
-      if (currentTime) {
-        item.currentTime = currentTime;
+      if (time) {
+        item.time = time;
       }
     })
   }
@@ -111,7 +110,7 @@ class ArticleStore {
           // update article in list
 
           runInAction(() => {
-            this.reset(article);
+            article.time = 0;
             this.items.splice(this.items.findIndex(item => item.id === article.id), 1, article);
           });
         }
@@ -132,21 +131,45 @@ class ArticleStore {
       }
 
       this.selected = item;
+
+      if (this.selected.time === this.selected.s3ObjectDuration) {
+        this.seek(this.selected, 0);
+      }
     });
   }
 
-  @action playing (item, currentTime) {
+  @action seek (item, time) {
     runInAction(() => {
-      item.currentTime = currentTime;
-      localStorage.setItem(`${item.id}-currentTime`, currentTime);
+      item.time = time;
+      localStorage.setItem(`${item.id}-time`, time);
     });
   }
 
   @action stop (item) {
     runInAction(() => {
-      this.playing(item, 0);
       this.isPlaying = false;
-    })
+
+      const getNext = index => {
+        const nextIndex = index + 1;
+
+        if (nextIndex < this.items.length) {
+          const nextItem = this.items[nextIndex];
+
+          if (nextItem && nextItem.time < nextItem.s3ObjectDuration) {
+            return nextItem;
+          }
+
+          return getNext(nextIndex);
+        }
+      }
+
+      const currentIndex = this.items.findIndex(it => it.id === item.id);
+      const nextItem = getNext(currentIndex);
+
+      if (nextItem) {
+        this.playPause(nextItem);
+      }
+    });
   }
 
   @action async favourite (item, token, isFavourite) {

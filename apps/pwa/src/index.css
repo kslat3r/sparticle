@@ -6,7 +6,7 @@ body {
 }
 
 body.has-player {
-  padding-bottom: 64px;
+  padding-bottom: 120px;
 }
 
 @media (min-width: 0px) {
@@ -27,4 +27,14 @@ body.has-player {
   body.has-tabs {
     padding-top: 114px;
   }
+}
+
+/* HACK */
+
+.MuiSlider-markLabel {
+  color: #f50057!important;
+}
+
+.MuiSlider-mark:nth-child(n+2) {
+  display: none !important;
 }

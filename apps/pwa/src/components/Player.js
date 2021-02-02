@@ -4,8 +4,11 @@ import { withStyles } from '@material-ui/core/styles';
 import { inject, observer } from 'mobx-react';
 import ReactPlayer from 'react-player';
 import IconButton from '@material-ui/core/IconButton';
+import ReplayIcon from '@material-ui/icons/Replay';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import PauseIcon from '@material-ui/icons/Pause';
+import Forward30Icon from '@material-ui/icons/Forward30';
+import Slider from '@material-ui/core/Slider';
 
 const styles = (theme) => ({
   container: {
@@ -15,12 +18,25 @@ const styles = (theme) => ({
     right: 0,
     zIndex: 1202,
     borderTop: '1px solid rgba(0, 0, 0, 0.12)',
-    backgroundColor: '#ffffff',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: theme.palette.grey[200],
     paddingTop: theme.spacing(1),
-    paddingBottom: theme.spacing(1)
+    paddingBottom: theme.spacing(1),
+    paddingLeft: theme.spacing(6),
+    paddingRight: theme.spacing(6)
+  },
+  button: {
+    color: '#fff',
+    backgroundColor: theme.palette.secondary.main,
+    '&:hover': {
+      color: theme.palette.secondary.main,
+      backgroundColor: '#fff'
+    },
+    marginLeft: theme.spacing(1),
+    marginRight: theme.spacing(1)
+  },
+  inner: {
+    width: '100%',
+    textAlign: 'center'
   }
 });
 
@@ -31,12 +47,18 @@ class Player extends React.Component {
     super(props);
 
     this.setReference = this.setReference.bind(this);
-    this.onClick = this.onClick.bind(this);
+    this.onRewindButtonClick = this.onRewindButtonClick.bind(this);
+    this.onPlayButtonClick = this.onPlayButtonClick.bind(this);
+    this.onFastForwardButtonClick = this.onFastForwardButtonClick.bind(this);
     this.onPlay = this.onPlay.bind(this);
     this.onProgress = this.onProgress.bind(this);
+    this.onSeekMouseDown = this.onSeekMouseDown.bind(this);
+    this.onSeek = this.onSeek.bind(this);
+    this.onSeekMouseUp = this.onSeekMouseUp.bind(this);
 
     this.state = {
-      player: null
+      player: null,
+      seeking: false
     }
   }
 
@@ -60,7 +82,23 @@ class Player extends React.Component {
     this.setState({ player });
   }
 
-  onClick (e) {
+  onRewindButtonClick () {
+    const {
+      articleStore,
+      articleStore: {
+        selected
+      }
+    } = this.props;
+
+    const {
+      player
+    } = this.state;
+
+    articleStore.seek(selected, 0);
+    player.seekTo(0);
+  }
+
+  onPlayButtonClick () {
     const {
       articleStore,
       articleStore: {
@@ -69,6 +107,24 @@ class Player extends React.Component {
     } = this.props
 
     articleStore.playPause(selected);
+  }
+
+  onFastForwardButtonClick () {
+    const {
+      articleStore,
+      articleStore: {
+        selected
+      }
+    } = this.props;
+
+    const {
+      player
+    } = this.state;
+
+    const time = selected.time + 30;
+
+    articleStore.seek(selected, time);
+    player.seekTo(time);
   }
 
   onPlay () {
@@ -82,7 +138,7 @@ class Player extends React.Component {
       player
     } = this.state;
 
-    player.seekTo(parseFloat(selected.currentTime));
+    player.seekTo(parseFloat(selected.time));
   }
 
   onProgress (e) {
@@ -93,11 +149,48 @@ class Player extends React.Component {
       }
     } = this.props;
 
-    articleStore.playing(selected, e.playedSeconds);
+    const {
+      seeking
+    } = this.state;
 
-    if (e.played === 1) {
-      articleStore.stop(selected);
+    if (!seeking) {
+      articleStore.seek(selected, e.playedSeconds);
+
+      if (e.played === 1) {
+        articleStore.stop(selected);
+      }
     }
+  }
+
+  onSeekMouseDown () {
+    this.setState({ seeking: true });
+  }
+
+  onSeek (e, value) {
+    const {
+      articleStore,
+      articleStore: {
+        selected
+      }
+    } = this.props;
+
+    articleStore.seek(selected, parseFloat(value));
+  }
+
+  onSeekMouseUp () {
+    this.setState({ seeking: false });
+
+    const {
+      articleStore: {
+        selected
+      }
+    } = this.props
+
+    const {
+      player
+    } = this.state;
+
+    player.seekTo(parseFloat(selected.time));
   }
 
   render () {
@@ -111,6 +204,28 @@ class Player extends React.Component {
       }
     } = this.props
 
+    let marks = [];
+
+    if (selected) {
+      const elapsed = selected.time;
+      const elapsedMinutes = Math.floor(elapsed / 60);
+      const elapsedSeconds = Math.ceil(elapsed - elapsedMinutes * 60);
+
+      marks.push({ value: 0, label: `${elapsedMinutes}m ${elapsedSeconds}s` });
+
+      if (selected && selected.s3ObjectDuration) {
+        const duration = selected.s3ObjectDuration;
+        const durationMinutes = Math.floor(duration / 60);
+        const durationSeconds = Math.ceil(duration - durationMinutes * 60);
+
+        marks.push({ value: selected.s3ObjectDuration / 2, label: selected.title });
+        marks.push({ value: selected.s3ObjectDuration, label: `${durationMinutes}m ${durationSeconds}s`});
+      } else {
+        marks.push({ value: 50, label: selected.title });
+        marks.push({ value: 100, label: '100%' });
+      }
+    }
+
     return (
       <React.Fragment>
         {children}
@@ -120,17 +235,51 @@ class Player extends React.Component {
             <div
               className={classes.container}
             >
-              <IconButton
-                className={classes.button}
-                onClick={this.onClick}
+              <div
+                className={classes.inner}
               >
+                <IconButton
+                  className={classes.button}
+                  onClick={this.onRewindButtonClick}
+                >
+                  <ReplayIcon />
+                </IconButton>
 
-                {isPlaying ? (
-                  <PauseIcon />
-                ) : (
-                  <PlayArrowIcon />
-                )}
-              </IconButton>
+                <IconButton
+                  className={classes.button}
+                  onClick={this.onPlayButtonClick}
+                >
+
+                  {isPlaying ? (
+                    <PauseIcon />
+                  ) : (
+                    <PlayArrowIcon />
+                  )}
+                </IconButton>
+
+                <IconButton
+                  className={classes.button}
+                  onClick={this.onFastForwardButtonClick}
+                >
+                  <Forward30Icon />
+                </IconButton>
+              </div>
+
+              <div
+                className={classes.inner}
+              >
+                <Slider
+                  value={selected.time}
+                  min={0}
+                  max={selected.s3ObjectDuration}
+                  onMouseDown={this.onSeekMouseDown}
+                  onChange={this.onSeek}
+                  onMouseUp={this.onSeekMouseUp}
+                  color="secondary"
+                  marks={marks}
+                  className={classes.slider}
+                />
+              </div>
             </div>
 
             <ReactPlayer

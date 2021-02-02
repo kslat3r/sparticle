@@ -52,7 +52,7 @@ class ArticleListItemPlayer extends React.Component {
       classes,
       item,
       item: {
-        currentTime,
+        time,
         s3ObjectDuration
       },
       articleStore: {
@@ -64,7 +64,7 @@ class ArticleListItemPlayer extends React.Component {
     let playedDuration;
 
     if (s3ObjectDuration) {
-      playedDuration = (currentTime / s3ObjectDuration) * 100;
+      playedDuration = (time / s3ObjectDuration) * 100;
     }
 
     return (
