@@ -1,0 +1,12 @@
+{
+  "name": "sparticle-e2e",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "cucumber-js features/*.feature --world-parameters '{\"baseApiUrl\":\"https://hkt6ofxvjg.execute-api.eu-west-2.amazonaws.com\"}' --format html:reports/report-`date +%s`.html --publish-quiet"
+  },
+  "dependencies": {
+    "@cucumber/cucumber": "^7.0.0",
+    "axios": "^0.21.1",
+    "uuid": "^8.3.2"
+  }
+}
