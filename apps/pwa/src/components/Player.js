@@ -35,6 +35,9 @@ const styles = (theme) => ({
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1)
   },
+  smallButton: {
+    padding: 8
+  },
   inner: {
     width: '100%',
     textAlign: 'center'
@@ -244,7 +247,7 @@ class Player extends React.Component {
                 className={classes.inner}
               >
                 <IconButton
-                  className={classes.button}
+                  className={[classes.button, classes.smallButton].join(' ')}
                   onClick={this.onRewindButtonClick}
                 >
                   <ReplayIcon />
@@ -263,7 +266,7 @@ class Player extends React.Component {
                 </IconButton>
 
                 <IconButton
-                  className={classes.button}
+                className={[classes.button, classes.smallButton].join(' ')}
                   onClick={this.onFastForwardButtonClick}
                 >
                   <Forward30Icon />
