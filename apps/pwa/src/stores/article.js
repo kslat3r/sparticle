@@ -126,14 +126,20 @@ class ArticleStore {
     });
   }
 
-  @action async seek (item, time) {
+  @action async seek (item, time, throttle = false) {
     runInAction(() => {
       this.error = false;
       item.s3ObjectElapsed = time;
     });
 
+    let func = makeRequest;
+
+    if (throttle === true) {
+      func = makeThrottledRequest;
+    }
+
     try {
-      await makeThrottledRequest(`${process.env.REACT_APP_API_HOST}/articles/${item.id}`, {
+      await func(`${process.env.REACT_APP_API_HOST}/articles/${item.id}`, {
         method: 'PATCH',
         body: JSON.stringify({
           s3ObjectElapsed: time
@@ -141,7 +147,7 @@ class ArticleStore {
         headers: {
           Authorization: this.authorisationStore.token
         }
-      }, 10000);
+      });
     } catch (e) {
       runInAction(() => {
         this.error = e.message;

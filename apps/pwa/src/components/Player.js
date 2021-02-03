@@ -158,7 +158,7 @@ class Player extends React.Component {
     } = this.state;
 
     if (!seeking) {
-      articleStore.seek(selected, e.playedSeconds);
+      articleStore.seek(selected, e.playedSeconds, false);
 
       if (e.played === 1) {
         articleStore.stop(selected);
