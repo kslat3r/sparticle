@@ -50,4 +50,4 @@ class AuthorisationStore {
   }
 }
 
-export default new AuthorisationStore()
+export default AuthorisationStore;

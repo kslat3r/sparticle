@@ -1,8 +1,11 @@
 import { observable, makeObservable, action, runInAction } from 'mobx';
 import makeRequest from '../helpers/makeRequest';
+import makeThrottledRequest from '../helpers/makeThrottledRequest';
 import { v4 as uuid } from 'uuid';
 
 class ArticleStore {
+  authorisationStore = null;
+
   @observable items = [];
   @observable requesting = false;
   @observable error = false;
@@ -14,11 +17,13 @@ class ArticleStore {
   refreshTimeout = 5000;
   intervals = {};
 
-  constructor () {
+  constructor (authorisationStore) {
     makeObservable(this);
+
+    this.authorisationStore = authorisationStore;
   }
 
-  @action async fetch (type, token) {
+  @action async fetch (type) {
     runInAction(() => {
       this.requesting = true;
       this.error = false;
@@ -36,7 +41,7 @@ class ArticleStore {
       items = await makeRequest(url, {
         method: 'GET',
         headers: {
-          Authorization: token
+          Authorization: this.authorisationStore.token
         }
       });
     } catch (e) {
@@ -48,10 +53,6 @@ class ArticleStore {
       return;
     }
 
-    // get durations
-
-    this.recall(items);
-
     // poll updated to scheduled polly tasks
 
     this.poll(items.filter(item =>
@@ -59,7 +60,7 @@ class ArticleStore {
       item.pollyTaskStatus === 'SCHEDULED' ||
       item.pollyTaskStatus === 'INPROGRESS' ||
       (item.pollyTaskStatus === 'COMPLETED' && !item.s3ObjectAccessible)
-    ), token);
+    ));
 
     runInAction(() => {
       this.items = items;
@@ -68,19 +69,7 @@ class ArticleStore {
     });
   }
 
-  recall (items) {
-    items.forEach(item => {
-      item.time = 0;
-
-      const time = parseFloat(localStorage.getItem(`${item.id}-time`));
-
-      if (time) {
-        item.time = time;
-      }
-    })
-  }
-
-  poll (items, token) {
+  poll (items) {
     items.forEach(item => {
       const interval = setInterval(async () => {
         // make request
@@ -91,7 +80,7 @@ class ArticleStore {
           article = await makeRequest(`${process.env.REACT_APP_API_HOST}/articles/${item.id}`, {
             method: 'GET',
             headers: {
-              Authorization: token
+              Authorization: this.authorisationStore.token
             }
           });
         } catch (e) {}
@@ -110,7 +99,6 @@ class ArticleStore {
           // update article in list
 
           runInAction(() => {
-            article.time = 0;
             this.items.splice(this.items.findIndex(item => item.id === article.id), 1, article);
           });
         }
@@ -132,16 +120,38 @@ class ArticleStore {
 
       this.selected = item;
 
-      if (this.selected.time === this.selected.s3ObjectDuration) {
+      if (this.selected.s3ObjectElapsed === this.selected.s3ObjectDuration) {
         this.seek(this.selected, 0);
       }
     });
   }
 
-  @action seek (item, time) {
+  @action async seek (item, time) {
     runInAction(() => {
-      item.time = time;
-      localStorage.setItem(`${item.id}-time`, time);
+      this.error = false;
+      item.s3ObjectElapsed = time;
+    });
+
+    try {
+      await makeThrottledRequest(`${process.env.REACT_APP_API_HOST}/articles/${item.id}`, {
+        method: 'PATCH',
+        body: JSON.stringify({
+          s3ObjectElapsed: time
+        }),
+        headers: {
+          Authorization: this.authorisationStore.token
+        }
+      }, 10000);
+    } catch (e) {
+      runInAction(() => {
+        this.error = e.message;
+      });
+
+      return;
+    }
+
+    runInAction(() => {
+      this.error = false;
     });
   }
 
@@ -155,7 +165,7 @@ class ArticleStore {
         if (nextIndex < this.items.length) {
           const nextItem = this.items[nextIndex];
 
-          if (nextItem && nextItem.time < nextItem.s3ObjectDuration) {
+          if (nextItem && nextItem.s3ObjectElapsed < nextItem.s3ObjectDuration) {
             return nextItem;
           }
 
@@ -172,10 +182,10 @@ class ArticleStore {
     });
   }
 
-  @action async favourite (item, token, isFavourite) {
+  @action async favourite (item, isFavourite) {
     runInAction(() => {
       this.error = false;
-      this.items.find(it => it.id === item.id).favourite = isFavourite;
+      item.favourite = isFavourite;
     });
 
     try {
@@ -185,7 +195,7 @@ class ArticleStore {
           favourite: isFavourite
         }),
         headers: {
-          Authorization: token
+          Authorization: this.authorisationStore.token
         }
       });
     } catch (e) {
@@ -201,7 +211,7 @@ class ArticleStore {
     });
   }
 
-  @action async delete (item, token) {
+  @action async delete (item) {
     runInAction(() => {
       this.error = false;
       this.items.find(it => it.id === item.id).deleted = true;
@@ -211,7 +221,7 @@ class ArticleStore {
       await makeRequest(`${process.env.REACT_APP_API_HOST}/articles/${item.id}`, {
         method: 'DELETE',
         headers: {
-          Authorization: token
+          Authorization: this.authorisationStore.token
         }
       });
     } catch (e) {
@@ -227,7 +237,7 @@ class ArticleStore {
     });
   }
 
-  @action async create (data, token) {
+  @action async create (data) {
     runInAction(() => {
       this.requesting = true;
       this.error = false;
@@ -242,7 +252,7 @@ class ArticleStore {
           voice: d.voice
         }),
         headers: {
-          Authorization: token,
+          Authorization: this.authorisationStore.token,
           'Content-Type': 'application/json'
         }
       })));
@@ -262,4 +272,4 @@ class ArticleStore {
   }
 }
 
-export default new ArticleStore()
+export default ArticleStore;

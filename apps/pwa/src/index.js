@@ -4,13 +4,17 @@ import { createBrowserHistory } from 'history';
 import { syncHistoryWithStore } from 'mobx-react-router';
 import { Provider } from 'mobx-react';
 import { Router, Switch, Route, Redirect } from 'react-router';
-import articleStore from './stores/article';
-import authorisationStore from './stores/authorisation';
-import routingStore from './stores/routing';
+import AuthorisationStore from './stores/authorisation';
+import ArticleStore from './stores/article';
+import RoutingStore from './stores/routing';
 import Player from './components/Player';
 import Articles from './components/Articles';
 import CreateArticles from './components/CreateArticles';
 import './index.css';
+
+const authorisationStore = new AuthorisationStore();
+const articleStore = new ArticleStore(authorisationStore);
+const routingStore = new RoutingStore();
 
 const stores = {
   articleStore,

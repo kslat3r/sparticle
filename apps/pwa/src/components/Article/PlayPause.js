@@ -30,6 +30,7 @@ const styles = theme => ({
 });
 
 @inject('articleStore')
+@inject('authorisationStore')
 @observer
 class ArticleListItemPlayer extends React.Component {
   constructor (props) {
@@ -52,7 +53,7 @@ class ArticleListItemPlayer extends React.Component {
       classes,
       item,
       item: {
-        time,
+        s3ObjectElapsed,
         s3ObjectDuration
       },
       articleStore: {
@@ -64,7 +65,7 @@ class ArticleListItemPlayer extends React.Component {
     let playedDuration;
 
     if (s3ObjectDuration) {
-      playedDuration = (time / s3ObjectDuration) * 100;
+      playedDuration = (s3ObjectElapsed / s3ObjectDuration) * 100;
     }
 
     return (

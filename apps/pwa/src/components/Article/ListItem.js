@@ -22,7 +22,7 @@ const styles = theme => ({
     marginRight: 0,
     right: 0
   },
-  time: {
+  duration: {
     marginLeft: 5,
     fontSize: '80%'
   }
@@ -86,7 +86,7 @@ class ArticleListItem extends React.Component {
 
                     {duration ? (
                       <span
-                        className={classes.time}
+                        className={classes.duration}
                       >
                         ({minutes}m {seconds}s)
                       </span>

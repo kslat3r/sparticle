@@ -22,7 +22,6 @@ const styles = theme => ({
 });
 
 @inject('articleStore')
-@inject('authorisationStore')
 @inject('routingStore')
 @observer
 class CreateArticles extends React.Component {
@@ -67,14 +66,11 @@ class CreateArticles extends React.Component {
 
       const {
         articleStore,
-        authorisationStore: {
-          token
-        },
         routingStore
       } = this.props
 
       try {
-        await articleStore.create(data, token);
+        await articleStore.create(data);
         routingStore.push('/articles');
       } catch (e) {}
     }

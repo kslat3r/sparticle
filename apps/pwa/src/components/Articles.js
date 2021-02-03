@@ -20,20 +20,16 @@ const styles = theme => ({
 });
 
 @inject('articleStore')
-@inject('authorisationStore')
 @inject('routingStore')
 @observer
 class Articles extends React.Component {
   componentDidMount () {
     const {
       articleStore,
-      type,
-      authorisationStore: {
-        token
-      }
+      type
     } = this.props;
 
-    articleStore.fetch(type, token);
+    articleStore.fetch(type);
   }
 
   render () {
@@ -44,8 +40,7 @@ class Articles extends React.Component {
         items
       },
       type,
-      showDeleted,
-      // classes
+      showDeleted
     } = this.props;
 
     let infoMsg;

@@ -28,7 +28,6 @@ const styles = (theme) => ({
 });
 
 @inject('articleStore')
-@inject('authorisationStore')
 @inject('routingStore')
 @observer
 class Toolbar extends React.Component {
@@ -77,14 +76,11 @@ class Toolbar extends React.Component {
 
     const {
       routingStore,
-      articleStore,
-      authorisationStore: {
-        token
-      }
+      articleStore
     } = this.props;
 
     routingStore.push(`/articles/${type}`);
-    articleStore.fetch(type, token);
+    articleStore.fetch(type);
   }
 
   render () {

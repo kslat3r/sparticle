@@ -16,7 +16,6 @@ const styles = theme => ({
 });
 
 @inject('articleStore')
-@inject('authorisationStore')
 class ArticleListItemMenu extends React.Component {
   constructor (props) {
     super(props);
@@ -51,26 +50,20 @@ class ArticleListItemMenu extends React.Component {
   onFavourite (isFavourite) {
     const {
       articleStore,
-      authorisationStore: {
-        token
-      },
       item,
     } = this.props;
 
-    articleStore.favourite(item, token, isFavourite);
+    articleStore.favourite(item, isFavourite);
     this.onMenuClose();
   }
 
   onDelete () {
     const {
       articleStore,
-      authorisationStore: {
-        token
-      },
       item
     } = this.props;
 
-    articleStore.delete(item, token);
+    articleStore.delete(item);
     this.onMenuClose();
   }
 

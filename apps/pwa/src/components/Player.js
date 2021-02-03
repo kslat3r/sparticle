@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import withAuthorisation from '../helpers/withAuthorisation';
 import { withStyles } from '@material-ui/core/styles';
 import { inject, observer } from 'mobx-react';
 import ReactPlayer from 'react-player';
@@ -121,10 +122,10 @@ class Player extends React.Component {
       player
     } = this.state;
 
-    const time = selected.time + 30;
+    const newS3ObjectElapsed = selected.s3ObjectElapsed + 30;
 
-    articleStore.seek(selected, time);
-    player.seekTo(time);
+    articleStore.seek(selected, newS3ObjectElapsed);
+    player.seekTo(parseFloat(newS3ObjectElapsed));
   }
 
   onPlay () {
@@ -138,7 +139,7 @@ class Player extends React.Component {
       player
     } = this.state;
 
-    player.seekTo(parseFloat(selected.time));
+    player.seekTo(selected.s3ObjectElapsed !== undefined ? parseFloat(selected.s3ObjectElapsed) : 0);
   }
 
   onProgress (e) {
@@ -190,7 +191,7 @@ class Player extends React.Component {
       player
     } = this.state;
 
-    player.seekTo(parseFloat(selected.time));
+    player.seekTo(selected.s3ObjectElapsed !== undefined ? parseFloat(selected.s3ObjectElapsed) : 0);
   }
 
   render () {
@@ -207,13 +208,17 @@ class Player extends React.Component {
     let marks = [];
 
     if (selected) {
-      const elapsed = selected.time;
-      const elapsedMinutes = Math.floor(elapsed / 60);
-      const elapsedSeconds = Math.ceil(elapsed - elapsedMinutes * 60);
+      if (selected.s3ObjectElapsed) {
+        const elapsed = selected.s3ObjectElapsed;
+        const elapsedMinutes = Math.floor(elapsed / 60);
+        const elapsedSeconds = Math.ceil(elapsed - elapsedMinutes * 60);
 
-      marks.push({ value: 0, label: `${elapsedMinutes}m ${elapsedSeconds}s` });
+        marks.push({ value: 0, label: `${elapsedMinutes}m ${elapsedSeconds}s` });
+      } else {
+        marks.push({ value: 0, label: `0m 0s` });
+      }
 
-      if (selected && selected.s3ObjectDuration) {
+      if (selected.s3ObjectDuration) {
         const duration = selected.s3ObjectDuration;
         const durationMinutes = Math.floor(duration / 60);
         const durationSeconds = Math.ceil(duration - durationMinutes * 60);
@@ -269,7 +274,7 @@ class Player extends React.Component {
                 className={classes.inner}
               >
                 <Slider
-                  value={selected.time}
+                  value={selected.s3ObjectElapsed}
                   min={0}
                   max={selected.s3ObjectDuration}
                   onMouseDown={this.onSeekMouseDown}
@@ -307,4 +312,4 @@ Player.propTypes = {
   ]).isRequired
 };
 
-export default withStyles(styles)(Player);
+export default withAuthorisation(withStyles(styles)(Player));

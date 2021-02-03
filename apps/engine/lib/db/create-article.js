@@ -9,7 +9,8 @@ module.exports = async (id, sessionId, params) => {
     created: new Date().getTime(),
     sessionId,
     deleted: false,
-    favourite: false
+    favourite: false,
+    s3ObjectElapsed: 0
   });
 
   try {

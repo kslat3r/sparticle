@@ -1,6 +1,7 @@
 const authorizeRequest = require('./http/authorize-request');
 const getArticleById = require('./db/get-article-by-id');
-const updateArticle = require('./db/update-article');
+const updateArticleFavourite = require('./db/update-article-favourite');
+const updateArticleElapsed = require('./db/update-article-elapsed');
 const RequestException = require('./exception/Request');
 const ForbiddenException = require('./exception/Forbidden');
 
@@ -51,12 +52,24 @@ module.exports = async (event) => {
     throw new ForbiddenException('User does not have access to this article');
   }
 
-  // update
+  // update favourite?
 
-  try {
-    article = await updateArticle(article, { favourite: body.favourite });
-  } catch (e) {
-    throw e;
+  if (body.favourite !== undefined) {
+    try {
+      article = await updateArticleFavourite(article, body.favourite);
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  // update elapsed?
+
+  if (body.s3ObjectElapsed !== undefined) {
+    try {
+      article = await updateArticleElapsed(article, body.s3ObjectElapsed);
+    } catch (e) {
+      throw e;
+    }
   }
 
   return article;
