@@ -32,7 +32,7 @@ body.has-player {
 /* HACK */
 
 .MuiSlider-markLabel {
-  color: #f50057!important;
+  color: #c2272d !important;
 }
 
 .MuiSlider-mark:nth-child(n+2) {

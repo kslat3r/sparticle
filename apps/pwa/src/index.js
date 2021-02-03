@@ -2,8 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { createBrowserHistory } from 'history';
 import { syncHistoryWithStore } from 'mobx-react-router';
+import { ThemeProvider } from '@material-ui/styles';
 import { Provider } from 'mobx-react';
 import { Router, Switch, Route, Redirect } from 'react-router';
+import theme from './theme';
 import AuthorisationStore from './stores/authorisation';
 import ArticleStore from './stores/article';
 import RoutingStore from './stores/routing';
@@ -26,50 +28,54 @@ const browserHistory = createBrowserHistory();
 const history = syncHistoryWithStore(browserHistory, routingStore);
 
 ReactDOM.render((
-  <Provider {...stores}>
-    <Player>
-      <Router
-        history={history}
-      >
-        <Switch>
-          <Route
-            path="/articles/create"
-          >
-            <CreateArticles />
-          </Route>
-          <Route
-            path="/articles/recent"
-          >
-            <Articles
-              type="recent"
-              showDeleted={false}
-            />
-          </Route>
-          <Route
-            path="/articles/favourites"
-          >
-            <Articles
-              type="favourites"
-              showDeleted={false}
-            />
-          </Route>
-          <Route
-            path="/articles/archived"
-          >
-            <Articles
-              type="archived"
-              showDeleted={true}
-            />
-          </Route>
-          <Route
-            path="/"
-          >
-            <Redirect
-              to="/articles/recent"
-            />
-          </Route>
-        </Switch>
-      </Router>
-    </Player>
-  </Provider>
+  <ThemeProvider
+    theme={theme}
+  >
+    <Provider {...stores}>
+      <Player>
+        <Router
+          history={history}
+        >
+          <Switch>
+            <Route
+              path="/articles/create"
+            >
+              <CreateArticles />
+            </Route>
+            <Route
+              path="/articles/recent"
+            >
+              <Articles
+                type="recent"
+                showDeleted={false}
+              />
+            </Route>
+            <Route
+              path="/articles/favourites"
+            >
+              <Articles
+                type="favourites"
+                showDeleted={false}
+              />
+            </Route>
+            <Route
+              path="/articles/archived"
+            >
+              <Articles
+                type="archived"
+                showDeleted={true}
+              />
+            </Route>
+            <Route
+              path="/"
+            >
+              <Redirect
+                to="/articles/recent"
+              />
+            </Route>
+          </Switch>
+        </Router>
+      </Player>
+    </Provider>
+  </ThemeProvider>
 ), document.getElementById('root'));
