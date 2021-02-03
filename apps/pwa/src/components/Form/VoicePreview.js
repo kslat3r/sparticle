@@ -54,7 +54,7 @@ class VoicePreview extends React.Component {
 
   render () {
     const {
-      voice,
+      value,
       url,
       onSelection,
       classes,
@@ -67,7 +67,7 @@ class VoicePreview extends React.Component {
 
     return (
       <MenuItem
-        onClick={() => onSelection(voice)}
+        onClick={() => onSelection(value)}
         selected={selected}
       >
         <ListItemIcon
@@ -88,7 +88,7 @@ class VoicePreview extends React.Component {
         </ListItemIcon>
 
         <ListItemText
-          primary={voice}
+          primary={value}
         />
 
         <ReactPlayer
@@ -105,7 +105,7 @@ class VoicePreview extends React.Component {
 
 VoicePreview.propTypes = {
   selected: PropTypes.bool.isRequired,
-  voice: PropTypes.string.isRequired,
+  value: PropTypes.string.isRequired,
   url: PropTypes.string.isRequired,
   onSelection: PropTypes.func.isRequired
 };

@@ -1,6 +1,6 @@
 const htmlToText = require('html-to-text');
 
-module.exports = (content, textSpeedPercentage = 90) => {
+module.exports = (content, speed = 90) => {
   const {
     siteName,
     title,
@@ -33,7 +33,7 @@ module.exports = (content, textSpeedPercentage = 90) => {
 
   return `
     <speak>
-      <prosody rate="${textSpeedPercentage}%">
+      <prosody rate="${speed}%">
         ${siteName} - ${title}
         ${byline && byline !== '' && siteName !== byline ? `<break time="1s" />${byline}` : ''}
         <break time="2s" />

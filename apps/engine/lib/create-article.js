@@ -60,8 +60,14 @@ module.exports = async (event) => {
 
   const voice = body.voice;
 
-  if (['Amy', 'Emma', 'Brian'].includes(body.voice) === false) {
-    throw new RequestException('Mandatory request body property \'boice\' is missing');
+  if (['Amy', 'Emma', 'Brian'].includes(voice) === false) {
+    throw new RequestException('Mandatory request body property \'voice\' is missing');
+  }
+
+  const speed = body.speed;
+
+  if ([120, 115, 110, 105, 100, 95, 90, 85, 80].includes(speed) === false) {
+    throw new RequestException('Mandatory request body property \'speed\' is missing');
   }
 
   // attempt to retrieve existing article from id for idempotency check
@@ -84,7 +90,13 @@ module.exports = async (event) => {
     encodedArticle = await getArticleByEncodedUrl(encodedUrl);
   } catch (e) {}
 
-  if (encodedArticle && encodedArticle.pollyTaskStatus === 'COMPLETED' && encodedArticle.s3ObjectAccessible === true && encodedArticle.voice === voice) {
+  if (
+    encodedArticle 
+    && encodedArticle.pollyTaskStatus === 'COMPLETED' 
+    && encodedArticle.s3ObjectAccessible === true 
+    && encodedArticle.voice === voice 
+    && encodedArticle.speed === speed
+  ) {
     // create article
 
     let article;
@@ -138,7 +150,7 @@ module.exports = async (event) => {
   let ssml;
 
   try {
-    ssml = getSsmlFromContent(content);
+    ssml = getSsmlFromContent(content, speed);
   } catch (e) {
     throw new InternalException(e.message);
   }
@@ -171,7 +183,8 @@ module.exports = async (event) => {
       s3ObjectUrl: task.SynthesisTask.OutputUri,
       s3ObjectContentType: task.SynthesisTask.OutputFormat,
       s3ObjectAccessible: false,
-      voice
+      voice,
+      speed
     });
   } catch (e) {
     throw e;

@@ -5,8 +5,10 @@ import Paper from '@material-ui/core/Paper';
 import TextField from '@material-ui/core/TextField';
 import IconButton from '@material-ui/core/IconButton';
 import RecordVoiceOverIcon from '@material-ui/icons/RecordVoiceOver';
+import SpeedIcon from '@material-ui/icons/Speed';
 import Menu from '@material-ui/core/Menu';
 import VoicePreview from './VoicePreview';
+import SpeedPreview from './SpeedPreview';
 
 const styles = theme => ({
   root: {
@@ -32,15 +34,21 @@ class CreateArticleForm extends React.Component {
     super(props);
 
     this.onUrlSelection = this.onUrlSelection.bind(this);
+    this.onSpeedMenuClick = this.onSpeedMenuClick.bind(this);
+    this.onSpeedMenuClose = this.onSpeedMenuClose.bind(this);
+    this.onSpeedSelection = this.onSpeedSelection.bind(this);
     this.onVoiceMenuClick = this.onVoiceMenuClick.bind(this);
     this.onVoiceMenuClose = this.onVoiceMenuClose.bind(this);
     this.onVoiceSelection = this.onVoiceSelection.bind(this);
 
     this.state = {
-      menuOpen: false,
-      menuAnchorEl: null,
+      speedMenuOpen: false,
+      speedMenuAnchorEl: null,
+      voiceMenuOpen: false,
+      voiceMenuAnchorEl: null,
       url: '',
-      voice: 'Amy'
+      voice: 'Amy',
+      speed: 100
     };
   }
 
@@ -59,32 +67,69 @@ class CreateArticleForm extends React.Component {
     } = this.props;
 
     const {
+      voice,
+      speed
+    } = this.state
+
+    onChange(index, { url, voice, speed });
+  }
+
+  onSpeedMenuClick (e) {
+    e.preventDefault();
+
+    this.setState({
+      speedMenuOpen: true,
+      speedMenuAnchorEl: e.currentTarget
+    });
+  }
+
+  onSpeedMenuClose () {
+    this.setState({
+      speedMenuOpen: false,
+      speedMenuAnchorEl: null
+    });
+  }
+
+  onSpeedSelection (speed) {
+    this.setState({
+      speedMenuOpen: false,
+      speedMenuAnchorEl: null,
+      speed
+    });
+
+    const {
+      index,
+      onChange
+    } = this.props;
+
+    const {
+      url,
       voice
     } = this.state
 
-    onChange(index, { url, voice });
+    onChange(index, { url, voice, speed });
   }
 
   onVoiceMenuClick (e) {
     e.preventDefault();
 
     this.setState({
-      menuOpen: true,
-      menuAnchorEl: e.currentTarget
+      voiceMenuOpen: true,
+      voiceMenuAnchorEl: e.currentTarget
     });
   }
 
   onVoiceMenuClose () {
     this.setState({
-      menuOpen: false,
-      menuAnchorEl: null
+      voiceMenuOpen: false,
+      voiceMenuAnchorEl: null
     });
   }
 
   onVoiceSelection (voice) {
     this.setState({
-      menuOpen: false,
-      menuAnchorEl: null,
+      voiceMenuOpen: false,
+      voiceMenuAnchorEl: null,
       voice
     });
 
@@ -94,10 +139,11 @@ class CreateArticleForm extends React.Component {
     } = this.props;
 
     const {
-      url
+      url,
+      speed
     } = this.state
 
-    onChange(index, { url, voice });
+    onChange(index, { url, voice, speed });
   }
 
   render () {
@@ -106,10 +152,13 @@ class CreateArticleForm extends React.Component {
     } = this.props;
 
     const {
-      menuOpen,
-      menuAnchorEl,
+      voiceMenuOpen,
+      voiceMenuAnchorEl,
+      speedMenuOpen,
+      speedMenuAnchorEl,
       url,
-      voice
+      voice,
+      speed
     } = this.state;
 
     return (
@@ -131,6 +180,31 @@ class CreateArticleForm extends React.Component {
             onChange={this.onUrlSelection}
             value={url}
           />
+
+          <IconButton
+            color="secondary"
+            className={classes.iconButton}
+            onClick={this.onSpeedMenuClick}
+          >
+            <SpeedIcon />
+          </IconButton>
+
+          <Menu
+            anchorEl={speedMenuAnchorEl}
+            keepMounted
+            open={speedMenuOpen}
+            onClose={this.onSpeedMenuClose}
+          >
+            {[120, 115, 110, 105, 100, 95, 90, 85, 80].map((val, i) => (
+              <SpeedPreview
+                key={i}
+                selected={speed === val}
+                value={val}
+                onSelection={this.onSpeedSelection}
+              />
+            ))}
+          </Menu>
+
           <IconButton
             color="secondary"
             className={classes.iconButton}
@@ -140,29 +214,29 @@ class CreateArticleForm extends React.Component {
           </IconButton>
 
           <Menu
-            anchorEl={menuAnchorEl}
+            anchorEl={voiceMenuAnchorEl}
             keepMounted
-            open={menuOpen}
+            open={voiceMenuOpen}
             onClose={this.onVoiceMenuClose}
           >
             <VoicePreview
               selected={voice === 'Amy'}
               url="https://s3.eu-west-2.amazonaws.com/sparticle-engine-prod-audio/6bf55160-f0a7-4ada-99d4-a98ddcf65329.mp3"
-              voice="Amy"
+              value="Amy"
               onSelection={this.onVoiceSelection}
             />
 
             <VoicePreview
               selected={voice === 'Emma'}
               url="https://s3.eu-west-2.amazonaws.com/sparticle-engine-prod-audio/9108986d-4f87-46a1-9722-77c4873426cc.mp3"
-              voice="Emma"
+              value="Emma"
               onSelection={this.onVoiceSelection}
             />
 
             <VoicePreview
               selected={voice === 'Brian'}
               url="https://s3.eu-west-2.amazonaws.com/sparticle-engine-prod-audio/d56dccdb-ab90-4f8e-aa2f-8d6a82d06d59.mp3"
-              voice="Brian"
+              value="Brian"
               onSelection={this.onVoiceSelection}
             />
           </Menu>

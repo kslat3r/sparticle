@@ -249,7 +249,8 @@ class ArticleStore {
         body: JSON.stringify({
           id: uuid(),
           encodedUrl: btoa(d.url),
-          voice: d.voice
+          voice: d.voice,
+          speed: d.speed
         }),
         headers: {
           Authorization: this.authorisationStore.token,
